@@ -1,3 +1,5 @@
+
+
 import lejos.nxt.*;
 import lejos.nxt.ColorSensor.Color;
 
