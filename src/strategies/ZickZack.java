@@ -5,15 +5,14 @@ import lejos.nxt.Motor;
 import lejos.nxt.UltrasonicSensor;
 
 public class ZickZack extends Regelung{
-	int lightThreshold = 35;
-	boolean lastTurn = false;
-	int counter = 0;
-	int counterBorder;
+	private int lightThreshold = 35;
+	private boolean lastTurn = false;
+	private int counterBorder;
+	private double speed = 1.5;
 
 	public ZickZack(int counterBorder){
 		this.counterBorder = counterBorder;
 	}
-	double speed = 1.5;
 	@Override
 	public void act(ColorSensor colorSensor, UltrasonicSensor ultrasoundSensor) {
 		
