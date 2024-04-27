@@ -50,6 +50,10 @@ public class UIFrame extends JFrame implements KeyListener {
                 btconn.send(4); // Sende "RIGHT"
                 System.out.println("Sende RIGHT");
                 break;
+            case 'M':
+                btconn.send(5); // Sende "MANUELl"
+                System.out.println("Sende MANUELL");
+                break;
             default:
                 System.out.println("Unbekannte Taste: " + key);
                 break;
