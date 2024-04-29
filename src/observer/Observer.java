@@ -10,7 +10,8 @@ public class Observer {
 		this.stateMachine = new StateMachine();
 	}
 	
-	public IDriveStrategy selectStrategy() {
+	public IDriveStrategy getStrategy() {
+		stateMachine.updateState();
 		State currentState = stateMachine.getCurrentState();
 		
 		switch (currentState) {
