@@ -8,12 +8,12 @@ public class StateMachine {
 		this.currentState = State.LINE_FOUND;
 		
 	}
-	
-	public void updateState() {
-        // Auswerten der Sensoren
-    }
 
     public State getCurrentState() {
         return currentState;
+    }
+    
+    public void setState(State currentState) {
+    	this.currentState = currentState;
     }
 }
