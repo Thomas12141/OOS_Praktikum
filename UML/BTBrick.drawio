@@ -1,27 +1,27 @@
-<mxfile host="app.diagrams.net" modified="2024-04-28T21:27:51.546Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15" etag="v7VFbRV0Xd1_kOKloIWY" version="24.3.1" type="device">
+<mxfile host="app.diagrams.net" modified="2024-04-29T15:12:54.413Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15" etag="b99MTYGIw8uRU5WAINEW" version="24.3.1" type="device">
   <diagram name="Seite-1" id="zfNhT6PyWQpC1gRaRfNo">
-    <mxGraphModel dx="1434" dy="802" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1434" dy="830" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="h_EhIec51e4aAT2pveXO-1" value="BTBrick" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="280" y="240" width="220" height="140" as="geometry" />
+        <mxCell id="h_EhIec51e4aAT2pveXO-1" value="BTBrick" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="280" y="240" width="220" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="h_EhIec51e4aAT2pveXO-2" value="- btconnection: BTConnection&lt;div&gt;- inputStream: DataInputStream&lt;/div&gt;&lt;div&gt;- &lt;u&gt;instance: BTBrick&lt;/u&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="h_EhIec51e4aAT2pveXO-1">
-          <mxGeometry y="26" width="220" height="54" as="geometry" />
+        <mxCell id="h_EhIec51e4aAT2pveXO-2" value="&lt;div&gt;- BTBrick: BTBrick&lt;/div&gt;- btconnection: BTConnection&lt;div&gt;- inputStream: DataInputStream&lt;/div&gt;&lt;div&gt;- &lt;u&gt;instance: BTBrick&lt;/u&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="h_EhIec51e4aAT2pveXO-1" vertex="1">
+          <mxGeometry y="26" width="220" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="h_EhIec51e4aAT2pveXO-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="h_EhIec51e4aAT2pveXO-1">
-          <mxGeometry y="80" width="220" height="8" as="geometry" />
+        <mxCell id="h_EhIec51e4aAT2pveXO-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="h_EhIec51e4aAT2pveXO-1" vertex="1">
+          <mxGeometry y="90" width="220" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="h_EhIec51e4aAT2pveXO-4" value="+ getInstance(): BTBrick&lt;div&gt;+ drive(int): void&lt;/div&gt;&lt;div&gt;+ run(): void&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="h_EhIec51e4aAT2pveXO-1">
-          <mxGeometry y="88" width="220" height="52" as="geometry" />
+        <mxCell id="h_EhIec51e4aAT2pveXO-4" value="+ getInstance(): BTBrick&lt;div&gt;+ drive(int): void&lt;/div&gt;&lt;div&gt;+ run(): void&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="h_EhIec51e4aAT2pveXO-1" vertex="1">
+          <mxGeometry y="98" width="220" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="h_EhIec51e4aAT2pveXO-7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="h_EhIec51e4aAT2pveXO-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.844;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="h_EhIec51e4aAT2pveXO-2">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="280" y="310" as="sourcePoint" />
             <mxPoint x="280" y="250" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="220" y="310" />
+              <mxPoint x="220" y="320" />
               <mxPoint x="220" y="250" />
             </Array>
           </mxGeometry>

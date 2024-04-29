@@ -23,6 +23,10 @@ public class BTBrick {
         return instance;
     }
 
+    private BTBrick() {
+
+    }
+
     public void drive(int command) {
         switch (command) {
             case 1: //forward
@@ -56,6 +60,7 @@ public class BTBrick {
                 Motor.B.setSpeed(300);
                 break;
             case 5: //switching manual and automatic
+                // optional -> clean input stream
                 // TODO: insert manual-automatic-switching method here
                 break;
         }
