@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.lejos.nxt.ldt.LEJOS_LIBRARY_CONTAINER/nxt"/>
 	<classpathentry kind="lib" path="/usr/local/leJOS_NXJ_0.9.1beta-3/lib/nxt/classes.jar"/>
+	<classpathentry kind="lib" path="/usr/local/leJOS_NXJ_0.9.1beta-3/lib/pc/pccomm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
