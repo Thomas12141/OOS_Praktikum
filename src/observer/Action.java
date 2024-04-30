@@ -5,6 +5,5 @@ public enum Action {
 	back,
 	left,
 	right,
-	manual,
-	noop,
+	manual
 }
