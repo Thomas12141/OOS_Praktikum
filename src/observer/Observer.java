@@ -9,6 +9,7 @@ import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
 public class Observer implements Subscriber{
+	private BTBrick brick = BTBrick.getInstance(this);
 	private StateMachine stateMachine;
 	private IDriveStrategy currentStrategy = getStrategy();
 	private UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
@@ -65,7 +66,7 @@ public class Observer implements Subscriber{
 	public void update(Action action) {
 		State state = stateMachine.getCurrentState();
 		 
-		if(s != State.USER_CTRL) {
+		if(state != State.USER_CTRL) {
 			if(action == Action.manual) {
 				stateMachine.setState(State.USER_CTRL);
 			}
