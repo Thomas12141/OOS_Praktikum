@@ -9,7 +9,7 @@ public class UIFrame extends JFrame implements KeyListener {
     public UIFrame(BluetoothConnection bt){
         super("BluetoothClient 0.1");
         btconn = bt;
-        boolean isConnected = btconn.connect("", "");
+        boolean isConnected = btconn.connect("Cocky", "001653188FD3");
 
         if (!isConnected) {
             System.out.println("Bluetooth-Verbindung fehlgeschlagen!");
