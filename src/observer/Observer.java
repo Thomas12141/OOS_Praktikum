@@ -1,6 +1,5 @@
 package observer;
 
-import btbrick.BTBrick;
 import interfaces.IDriveStrategy;
 import strategies.*;
 
@@ -27,7 +26,7 @@ public class Observer {
 		case LINE_LOST:
 			return BackOnTrack.getInstance();
 		default:
-			return BTBrick.getInstance();
+			return ManualDrive.getInstance();
 		}
 	}
 }

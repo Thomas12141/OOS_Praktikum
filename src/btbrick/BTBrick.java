@@ -1,14 +1,14 @@
 package btbrick;
 
-import lejos.nxt.Motor;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
+import strategies.ManualDrive;
 import strategies.Steuerung;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class BTBrick extends Steuerung {
+public class BTBrick implements Runnable {
 
     private BTConnection btconnection;
 
@@ -16,11 +16,14 @@ public class BTBrick extends Steuerung {
 
     private static BTBrick instance;
 
+    private Steuerung steuerung;
+
     // Singleton implementation for BTBrick
     public static BTBrick getInstance() {
         if (instance == null) {
             instance = new BTBrick();
         }
+        instance.steuerung = ManualDrive.getInstance();
         return instance;
     }
 
@@ -28,46 +31,8 @@ public class BTBrick extends Steuerung {
 
     }
 
-    public void drive(int command) {
-        switch (command) {
-            case 1: //forward
-                System.out.println("Driving FORWARD");
-                Motor.A.forward();
-                Motor.A.setSpeed(300);
-                Motor.B.forward();
-                Motor.B.setSpeed(300);
-                break;
-            case 2: //left
-                Motor.A.forward();
-                Motor.A.setSpeed(300);
-                Motor.B.forward();
-                Motor.B.setSpeed(100);
-                break;
-            case 3: //backward
-                if (Motor.A.getSpeed() > 0 || Motor.B.getSpeed() > 0) { //if the robot is driving straight ahead
-                    Motor.A.stop();
-                    Motor.B.stop();
-                } else {
-                    Motor.A.backward();
-                    Motor.A.setSpeed(100);
-                    Motor.B.backward();
-                    Motor.B.setSpeed(100);
-                    break;
-                }
-            case 4: //right
-                Motor.A.forward();
-                Motor.A.setSpeed(100);
-                Motor.B.forward();
-                Motor.B.setSpeed(300);
-                break;
-            case 5: //switching manual and automatic
-                // optional -> clean input stream
-                // TODO: insert manual-automatic-switching method here
-                break;
-        }
-    }
 
-
+    @Override
     public void run() {
         if (btconnection == null) {
             System.out.println("Waiting for input stream...");
@@ -79,7 +44,7 @@ public class BTBrick extends Steuerung {
         while (true) {
             try {
                 int commandBT = inputStream.readInt();
-                drive(commandBT);
+                steuerung.drive(commandBT);
             } catch (IOException e) {
                 e.printStackTrace();
             }
