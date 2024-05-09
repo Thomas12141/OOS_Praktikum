@@ -1,13 +1,14 @@
 package observer;
 
+import btbrick.BTBrick;
 import interfaces.IDriveStrategy;
 import strategies.*;
 
 public class Observer {
-	private StateMachine stateMachine;
+	private final StateMachine stateMachine;
 	
 	public Observer() {
-		this.stateMachine = new StateMachine();
+		this.stateMachine = StateMachine.getInstance();
 	}
 
 	
@@ -24,11 +25,9 @@ public class Observer {
 		case LINE_FOUND:
 			return PIDRegler.getInstance();
 		case LINE_LOST:
-			return new BackOnTrack();
-		case USER_CTRL:
-			return null;
+			return BackOnTrack.getInstance();
 		default:
-			return null;
+			return BTBrick.getInstance();
 		}
 	}
 }

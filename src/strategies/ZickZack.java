@@ -1,30 +1,35 @@
 package strategies;
 
-import lejos.nxt.ColorSensor;
 import lejos.nxt.Motor;
-import lejos.nxt.UltrasonicSensor;
 
 public class ZickZack extends Regelung{
-	private int lightThreshold = 35;
+
+	private static ZickZack INSTANCE;
+
 	private boolean lastTurn = false;
-	private int counterBorder;
+
 	private double speed = 1.5;
 
-	public ZickZack(int counterBorder){
-		this.counterBorder = counterBorder;
+	private ZickZack(){
 	}
+
+	public static ZickZack getInstance(){
+		if(INSTANCE == null){
+			INSTANCE = new ZickZack();
+		}
+		return INSTANCE;
+	}
+
 	@Override
-	public void act(ColorSensor colorSensor, UltrasonicSensor ultrasoundSensor) {
-		
-		int value = colorSensor.getLightValue();
-		
-		if(lastTurn) {
+	public void act(int colorSensorValue, int ultrasoundSensorValue) {
+
+        if(lastTurn) {
 			Motor.A.setSpeed((int) (300*speed));
 			Motor.B.setSpeed((int) (100*speed));
 			
 			Motor.B.forward();
 			Motor.A.forward();
-			if(value<lightThreshold) {
+			if(colorSensorValue <LIGHT_THRESHOLD) {
 				lastTurn = !lastTurn;
 			}
 		}else {
@@ -33,7 +38,7 @@ public class ZickZack extends Regelung{
 
 			Motor.B.forward();
 			Motor.A.forward();
-			if(value>=lightThreshold) {
+			if(colorSensorValue >=LIGHT_THRESHOLD) {
 				lastTurn = !lastTurn;
 			}
 		}

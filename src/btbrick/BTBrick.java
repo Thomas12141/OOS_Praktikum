@@ -3,11 +3,12 @@ package btbrick;
 import lejos.nxt.Motor;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
+import strategies.Steuerung;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class BTBrick {
+public class BTBrick extends Steuerung {
 
     private BTConnection btconnection;
 

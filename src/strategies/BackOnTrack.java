@@ -1,32 +1,39 @@
 package strategies;
 
-import lejos.nxt.ColorSensor;
 import lejos.nxt.Motor;
-import lejos.nxt.UltrasonicSensor;
+
 public class BackOnTrack extends Regelung{
 
-    private int lightThreshold = 35;
-    int speed = 100;
-    double speedDiv;
-    public BackOnTrack(){
-        speedDiv=0.7;
+    private static BackOnTrack INSTANCE;
+
+    private final int baseSpeed = 100;
+
+    private double speedDivisor = 0.7;;
+
+    private BackOnTrack(){
+    }
+
+    public static BackOnTrack getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new BackOnTrack();
+        }
+        return INSTANCE;
     }
 
     @Override
-    public void act(ColorSensor colorSensor, UltrasonicSensor ultrasoundSensor) {
-        int value = colorSensor.getLightValue();
-        if(value>lightThreshold) {
+    public void act(int colorSensorValue, int ultrasoundSensorValue) {
+        if(colorSensorValue>LIGHT_THRESHOLD) {
             System.out.println("Linie gefunen!");
             return;
         }
 
-        Motor.A.setSpeed((int) (speed));
-        Motor.B.setSpeed((int) (speedDiv*speed));
+        Motor.A.setSpeed(baseSpeed);
+        Motor.B.setSpeed((int) (speedDivisor* baseSpeed));
 
         Motor.B.forward();
         Motor.A.forward();
 
-        speedDiv/=0.99;
+        speedDivisor/=0.99;
 
     }
 }
