@@ -6,7 +6,7 @@ public class BackOnTrack extends Regelung{
 
     private static BackOnTrack INSTANCE;
 
-    private final int baseSpeed = 100;
+    private final int baseSpeed = 300;
 
     private double speedDivisor = 0.7;;
 
@@ -19,9 +19,7 @@ public class BackOnTrack extends Regelung{
         }
         return INSTANCE;
     }
-    int timeout = 1000;
-    int prevLen = 100;
-int len = 100;
+
     @Override
     public void act(int colorSensorValue, int ultrasoundSensorValue) {
         if(colorSensorValue>LIGHT_THRESHOLD) {
@@ -37,21 +35,5 @@ int len = 100;
 
         speedDivisor/=0.99;
 
-    }
-    
-    public void turn90right() {
-
-        Motor.A.setSpeed((int) (speed));
-
-        Motor.B.setSpeed((int) (speed));
-    	Motor.A.forward();
-    	Motor.B.backward();
-    	
-    	 try {
- 			Thread.sleep(timeout);
- 		} catch (InterruptedException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
- 		}
     }
 }

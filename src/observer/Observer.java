@@ -11,22 +11,19 @@ import strategies.*;
 
 public class Observer implements Subscriber{
 	private final StateMachine stateMachine;
-	
+
 	public Observer() {
 		this.stateMachine = StateMachine.getInstance();
+
+		colorSensor.setFloodlight(true);
 	}
 
 	private BTBrick brick = BTBrick.getInstance(this);
-	private StateMachine stateMachine;
-	private IDriveStrategy currentStrategy = getStrategy();
+	private Regelung currentStrategy = (Regelung) getStrategy();
 	private UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
 	private ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
 	private final int LIGHT_THRESHOLD = 35;
-	public Observer() {
-		this.stateMachine = StateMachine.getInstance();
-		
-		colorSensor.setFloodlight(true);
-	}
+
 
 	
 	public void updateState() {
@@ -45,8 +42,8 @@ public class Observer implements Subscriber{
 	
 	public void act() {
 		updateState();
-		currentStrategy = getStrategy();
-		currentStrategy.act(colorSensor, sensor);
+		currentStrategy = (Regelung) getStrategy();
+		currentStrategy.act(colorSensor.getLightValue(), sensor.getDistance());
 	}
 	
 	public IDriveStrategy getStrategy() {
