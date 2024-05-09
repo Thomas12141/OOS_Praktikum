@@ -1,4 +1,5 @@
 import lejos.nxt.*;
+import strategies.BackOnTrack;
 import strategies.ZickZack;
 
 public class Main {
@@ -7,10 +8,10 @@ public class Main {
 		ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
 		
 		colorSensor.setFloodlight(true);
-		
+		BackOnTrack bot = new BackOnTrack();
 		ZickZack zickZack = new ZickZack(1000);
 		while(!Button.ENTER.isDown()) {
-			zickZack.act(colorSensor, sensor);
+			bot.act(colorSensor, sensor);
 			
 		}
 	}

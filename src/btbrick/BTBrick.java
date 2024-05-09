@@ -3,46 +3,60 @@ package btbrick;
 import lejos.nxt.Motor;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
+import observer.Action;
+import observer.Observer;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class BTBrick {
+import interfaces.Subscriber;
 
+public class BTBrick implements Runnable{
+	
+	private ArrayList<Subscriber> subscribers = new ArrayList<>();
     private BTConnection btconnection;
 
     private DataInputStream inputStream;
-
+    
     private static BTBrick instance;
-
+    
+    private Observer obs;
+    
     // Singleton implementation for BTBrick
-    public static BTBrick getInstance() {
+    public static BTBrick getInstance(Observer obs) {
         if (instance == null) {
-            instance = new BTBrick();
+            instance = new BTBrick(obs);
         }
         return instance;
     }
 
-    private BTBrick() {
-
+    private BTBrick(Observer obs) {
+    	this.obs = obs;
     }
 
-    public void drive(int command) {
+    public void drive(Action command) {
+    	boolean stop = obs.getUserState();
+    	
+    	if(!stop && command == Action.manual) {
+    		obs.updateState();
+    	}else
+    	
         switch (command) {
-            case 1: //forward
+            case forward: //forward
                 System.out.println("Driving FORWARD");
                 Motor.A.forward();
                 Motor.A.setSpeed(300);
                 Motor.B.forward();
                 Motor.B.setSpeed(300);
                 break;
-            case 2: //left
+            case left: //left
                 Motor.A.forward();
                 Motor.A.setSpeed(300);
                 Motor.B.forward();
                 Motor.B.setSpeed(100);
                 break;
-            case 3: //backward
+            case back: //backward
                 if (Motor.A.getSpeed() > 0 || Motor.B.getSpeed() > 0) { //if the robot is driving straight ahead
                     Motor.A.stop();
                     Motor.B.stop();
@@ -53,36 +67,70 @@ public class BTBrick {
                     Motor.B.setSpeed(100);
                     break;
                 }
-            case 4: //right
+            case right: //right
                 Motor.A.forward();
                 Motor.A.setSpeed(100);
                 Motor.B.forward();
                 Motor.B.setSpeed(300);
                 break;
-            case 5: //switching manual and automatic
+            default: //switching manual and automatic
                 // optional -> clean input stream
                 // TODO: insert manual-automatic-switching method here
+            	
                 break;
         }
     }
 
-
-    public void run() {
-        if (btconnection == null) {
-            System.out.println("Waiting for input stream...");
-            btconnection = Bluetooth.waitForConnection();
-            inputStream = btconnection.openDataInputStream();
-            System.out.println("Input stream found...");
-        }
-
-        while (true) {
-            try {
-                int commandBT = inputStream.readInt();
-                drive(commandBT);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void init() {
+    	  if (btconnection == null) {
+              System.out.println("Waiting for input stream...");
+              btconnection = Bluetooth.waitForConnection();
+              inputStream = btconnection.openDataInputStream();
+              System.out.println("Input stream found...");
+          }
     }
+    
+   
+    @Override
+    public void run() {
+    	init();
+    	while(true) {
+    		int length = 0;
+    		try {
+    			length = inputStream.available();
+    		} catch (IOException e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		}
+    		
+    		if(length>1) {
+    			try {
+    	        	Action commandBT = Action.values()[inputStream.readInt()];
+    	            drive(commandBT);
+    	        } catch (IOException e) {
+    	            e.printStackTrace();
+    	        }
+    		}
+    	}
+    }
+    
+    public void register(Subscriber subscriber) {
+    	subscribers.add(subscriber);
+    }
+    
+    public void unsubscribe(Subscriber subscriber) {
+    	subscribers.remove(subscriber);
+    }
+    
+    public void notifySubscribers(Action action) {
+    	for(Subscriber subscriber: subscribers) {
+    		subscriber.update(action);
+    	}
+    }
+    
+    public void commence() {
+    	run();
+    }
+    
 
 }
