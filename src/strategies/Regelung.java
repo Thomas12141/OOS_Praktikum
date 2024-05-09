@@ -1,11 +1,17 @@
 package strategies;
 
 import interfaces.IDriveStrategy;
-import lejos.nxt.ColorSensor;
-import lejos.nxt.UltrasonicSensor;
 
 public abstract class Regelung implements IDriveStrategy{
 
-	public abstract void act(ColorSensor colorSensorValue,UltrasonicSensor ultrasoundSensor);
+	protected final int LIGHT_THRESHOLD = 35;
+
+	/**
+	 * Acts on the given messaruements
+	 * @param colorSensorValue The Value of the Color Sensor
+	 * @param ultrasoundSensor The Value of the Ultrasonic Sensor
+	 * @return
+	 */
+	public abstract void act(int colorSensorValue, int ultrasoundSensor);
 
 }

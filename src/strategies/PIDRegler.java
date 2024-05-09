@@ -1,8 +1,6 @@
 package strategies;
 
-import lejos.nxt.ColorSensor;
 import lejos.nxt.Motor;
-import lejos.nxt.UltrasonicSensor;
 
 public class PIDRegler extends Regelung{
 
@@ -22,17 +20,15 @@ public class PIDRegler extends Regelung{
     private PIDRegler(){}
 
     @Override
-    public void act(ColorSensor colorSensor, UltrasonicSensor ultrasoundSensor) {
+    public void act(int colorSensorValue, int ultrasoundSensorValue) {
         int proportionConstant = 1000;
 
         int integralConstant = 100;
 
         int derivativeConstant = 10000;
 
-        int offset = 35;
 
-        int colorValue = colorSensor.getLightValue();
-        int error = colorValue - offset;
+        int error = colorSensorValue - LIGHT_THRESHOLD;
         integral += error;
         int derivative = error - lastError;
         int turn = proportionConstant * error + integralConstant * integral + derivativeConstant * derivative;

@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 public class UIFrame extends JFrame implements KeyListener {
 
-    private BluetoothConnection btconn;
+    private final BluetoothConnection btconn;
 
     public UIFrame(BluetoothConnection bt){
         super("BluetoothClient 0.1");

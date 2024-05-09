@@ -8,7 +8,14 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
+
 public class Observer implements Subscriber{
+	private final StateMachine stateMachine;
+	
+	public Observer() {
+		this.stateMachine = StateMachine.getInstance();
+	}
+
 	private BTBrick brick = BTBrick.getInstance(this);
 	private StateMachine stateMachine;
 	private IDriveStrategy currentStrategy = getStrategy();
@@ -16,7 +23,7 @@ public class Observer implements Subscriber{
 	private ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
 	private final int LIGHT_THRESHOLD = 35;
 	public Observer() {
-		this.stateMachine = new StateMachine();
+		this.stateMachine = StateMachine.getInstance();
 		
 		colorSensor.setFloodlight(true);
 	}
@@ -49,8 +56,10 @@ public class Observer implements Subscriber{
 		switch (currentState) {
 		case LINE_FOUND:
 			return PIDRegler.getInstance();
+		case LINE_LOST:
+			return BackOnTrack.getInstance();
 		default:
-			return new BackOnTrack();
+			return ManualDrive.getInstance();
 		}
 	}
 	
