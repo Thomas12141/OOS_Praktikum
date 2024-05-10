@@ -1,8 +1,6 @@
 import btbrick.BTBrick;
 import lejos.nxt.*;
 import observer.Observer;
-import strategies.BackOnTrack;
-import strategies.ZickZack;
 
 public class Main {
 	public static void main(String[] args) {

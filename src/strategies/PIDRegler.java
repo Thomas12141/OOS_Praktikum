@@ -29,6 +29,7 @@ public class PIDRegler extends Regelung{
 
     private PIDRegler(){}
 
+    @Override
     public void resetValues(){
         integral = 0;
         lastError = 0;
@@ -40,7 +41,7 @@ public class PIDRegler extends Regelung{
         integral += error;
         int derivative = error - lastError;
         int turn = PROPORTION_CONSTANT * error + INTEGRAL_CONSTANT * integral + DERIVATIVE_CONSTANT * derivative;
-        turn /= PROPORTION_REDUCER;;
+        turn /= PROPORTION_REDUCER;
         int powerA = TARGET_POWER + turn;
         int powerB = TARGET_POWER - turn;
         Motor.A.forward();

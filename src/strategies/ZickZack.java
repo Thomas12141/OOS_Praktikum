@@ -22,21 +22,18 @@ public class ZickZack extends Regelung{
 		return INSTANCE;
 	}
 
+	public void resetValues(){}
 	@Override
 	public void act(int colorSensorValue, int ultrasoundSensorValue) {
 
         if(colorSensorValue <LIGHT_THRESHOLD) {
 			Motor.A.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
 			Motor.B.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
-			
-			Motor.B.forward();
-			Motor.A.forward();
 		}else {
 			Motor.B.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
 			Motor.A.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
-
-			Motor.B.forward();
-			Motor.A.forward();
 		}
+		Motor.B.forward();
+		Motor.A.forward();
 	}
 }

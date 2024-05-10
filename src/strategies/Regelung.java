@@ -14,4 +14,6 @@ public abstract class Regelung implements IDriveStrategy{
 	 */
 	public abstract void act(int colorSensorValue, int ultrasoundSensor);
 
+	public abstract void resetValues();
+
 }

@@ -20,6 +20,10 @@ public class Observer implements Subscriber{
 
 	private Action action;
 
+	private int stateCounter = 0;
+
+	private final int HOW_LONG_OUTSIDE_LINE = 50;
+
 	private Observer() {
 		this.stateMachine = StateMachine.getInstance();
 
@@ -34,8 +38,8 @@ public class Observer implements Subscriber{
 	}
 
 	private Regelung currentStrategy = (Regelung) getStrategy();
-	private UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
-	private ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
+	private final UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
+	private final ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
 	private final int LIGHT_THRESHOLD = 35;
 
 
@@ -45,7 +49,11 @@ public class Observer implements Subscriber{
 		// Setzen der States
 		int lightV = colorSensor.getLightValue();
 		if(lightV < LIGHT_THRESHOLD) {
-			stateMachine.setState(State.LINE_LOST);
+			stateCounter++;
+			if(stateCounter == HOW_LONG_OUTSIDE_LINE) {
+				stateCounter = 0;
+				stateMachine.setState(State.LINE_LOST);
+			}
 		}else {
 			stateMachine.setState(LINE_FOUND);
 		}
@@ -67,24 +75,26 @@ public class Observer implements Subscriber{
 	public IDriveStrategy getStrategy() {
 
 		State currentState = stateMachine.getCurrentState();
-
+		IDriveStrategy iDriveStrategy;
 		switch (currentState) {
 		case LINE_FOUND:
-			return PIDRegler.getInstance();
+			iDriveStrategy = PIDRegler.getInstance();
+			break;
 		case LINE_LOST:
-			return BackOnTrack.getInstance();
+			iDriveStrategy =  BackOnTrack.getInstance();
+			break;
 		default:
-			return ManualDrive.getInstance();
+			iDriveStrategy =  ManualDrive.getInstance();
 		}
+		if(iDriveStrategy instanceof Regelung){
+			((Regelung)iDriveStrategy).resetValues();
+		}
+		return iDriveStrategy;
 	}
 	
 	
 	public boolean getUserState() {
-		if (stateMachine.getCurrentState() == USER_CTRL) {
-			return true;
-		} else {
-			return false;
-		}
+        return stateMachine.getCurrentState() == USER_CTRL;
 	}
 
 	@Override

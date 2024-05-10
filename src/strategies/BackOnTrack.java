@@ -22,6 +22,7 @@ public class BackOnTrack extends Regelung{
         return INSTANCE;
     }
 
+    @Override
     public void resetValues(){
         speedDivisor = 0.7;
     }

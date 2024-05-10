@@ -14,7 +14,7 @@ import interfaces.Subscriber;
 
 public class BTBrick implements Runnable{
 
-    private ArrayList<Subscriber> subscribers = new ArrayList<>();
+    private final ArrayList<Subscriber> subscribers = new ArrayList<>();
 
 
     private BTConnection btconnection;
