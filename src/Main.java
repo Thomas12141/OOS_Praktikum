@@ -1,18 +1,19 @@
+import btbrick.BTBrick;
 import lejos.nxt.*;
+import observer.Observer;
 import strategies.BackOnTrack;
 import strategies.ZickZack;
 
 public class Main {
 	public static void main(String[] args) {
-		UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
-		ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
-		
-		colorSensor.setFloodlight(true);
-		
-		ZickZack zickZack = ZickZack.getInstance();
+		BTBrick brick = BTBrick.getInstance();
+		Observer observer = Observer.getINSTANCE();
+		brick.register(observer);
+		Thread thread = new Thread(brick);
+		thread.start();
 		while(!Button.ENTER.isDown()) {
-			zickZack.act(colorSensor.getLightValue(), sensor.getDistance());
-			
+			observer.act();
 		}
+		thread.interrupt();
 	}
 }

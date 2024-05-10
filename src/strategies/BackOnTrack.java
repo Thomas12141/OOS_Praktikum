@@ -6,9 +6,11 @@ public class BackOnTrack extends Regelung{
 
     private static BackOnTrack INSTANCE;
 
-    private final int baseSpeed = 300;
+    private final int BASE_SPEED = 300;
 
-    private double speedDivisor = 0.7;;
+    private final double SPEED_REDUCER = 0.99;
+
+    private double speedDivisor = 0.7;
 
     private BackOnTrack(){
     }
@@ -20,6 +22,10 @@ public class BackOnTrack extends Regelung{
         return INSTANCE;
     }
 
+    public void resetValues(){
+        speedDivisor = 0.7;
+    }
+
     @Override
     public void act(int colorSensorValue, int ultrasoundSensorValue) {
         if(colorSensorValue>LIGHT_THRESHOLD) {
@@ -27,13 +33,13 @@ public class BackOnTrack extends Regelung{
             return;
         }
 
-        Motor.A.setSpeed(baseSpeed);
-        Motor.B.setSpeed((int) (speedDivisor* baseSpeed));
+        Motor.A.setSpeed(BASE_SPEED);
+        Motor.B.setSpeed((int) (speedDivisor* BASE_SPEED));
 
         Motor.A.forward();
         Motor.B.forward();
 
-        speedDivisor/=0.99;
+        speedDivisor/=SPEED_REDUCER;
 
     }
 }

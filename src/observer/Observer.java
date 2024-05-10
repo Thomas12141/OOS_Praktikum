@@ -8,17 +8,31 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
+import static observer.Action.manual;
+import static observer.State.LINE_FOUND;
+import static observer.State.USER_CTRL;
+
 
 public class Observer implements Subscriber{
+	private static Observer INSTANCE;
+
 	private final StateMachine stateMachine;
 
-	public Observer() {
+	private Action action;
+
+	private Observer() {
 		this.stateMachine = StateMachine.getInstance();
 
 		colorSensor.setFloodlight(true);
 	}
 
-	private BTBrick brick = BTBrick.getInstance(this);
+	public static Observer getINSTANCE() {
+		if(INSTANCE == null) {
+			INSTANCE = new Observer();
+		}
+		return INSTANCE;
+	}
+
 	private Regelung currentStrategy = (Regelung) getStrategy();
 	private UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
 	private ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
@@ -33,7 +47,7 @@ public class Observer implements Subscriber{
 		if(lightV < LIGHT_THRESHOLD) {
 			stateMachine.setState(State.LINE_LOST);
 		}else {
-			stateMachine.setState(State.LINE_FOUND);
+			stateMachine.setState(LINE_FOUND);
 		}
 		
 		
@@ -41,9 +55,13 @@ public class Observer implements Subscriber{
     }
 	
 	public void act() {
-		updateState();
-		currentStrategy = (Regelung) getStrategy();
-		currentStrategy.act(colorSensor.getLightValue(), sensor.getDistance());
+		if(stateMachine.getCurrentState() == USER_CTRL){
+			ManualDrive.getInstance().drive(action);
+		}else {
+			updateState();
+			currentStrategy = (Regelung) getStrategy();
+			currentStrategy.act(colorSensor.getLightValue(), sensor.getDistance());
+		}
 	}
 	
 	public IDriveStrategy getStrategy() {
@@ -62,26 +80,26 @@ public class Observer implements Subscriber{
 	
 	
 	public boolean getUserState() {
-		if (stateMachine.getCurrentState() == State.USER_CTRL) { 
+		if (stateMachine.getCurrentState() == USER_CTRL) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
+	@Override
 	public void update(Action action) {
-		State state = stateMachine.getCurrentState();
-		 
-		if(state != State.USER_CTRL) {
-			if(action == Action.manual) {
-				stateMachine.setState(State.USER_CTRL);
+		if(action == manual){
+			State state = stateMachine.getCurrentState();
+
+			if(state != USER_CTRL) {
+				stateMachine.setState(USER_CTRL);
+			}else {
+				stateMachine.setState(LINE_FOUND);
 			}
 		}else {
-			if(action == Action.manual) {
-				updateState();
-			}else {
-				brick.drive(action);
-			}
+			this.action = action;
 		}
+
 	}
 }

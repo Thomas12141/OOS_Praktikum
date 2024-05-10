@@ -23,18 +23,16 @@ public class BTBrick implements Runnable{
 
     private static BTBrick instance;
 
-    private Observer obs;
 
     // Singleton implementation for BTBrick
-    public static BTBrick getInstance(Observer obs) {
+    public static BTBrick getInstance() {
         if (instance == null) {
-            instance = new BTBrick(obs);
+            instance = new BTBrick();
         }
         return instance;
     }
 
-    private BTBrick(Observer obs) {
-        this.obs = obs;
+    private BTBrick() {
     }
 
 
@@ -56,7 +54,6 @@ public class BTBrick implements Runnable{
             try {
                 length = inputStream.available();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
 
@@ -82,10 +79,6 @@ public class BTBrick implements Runnable{
         for(Subscriber subscriber: subscribers) {
             subscriber.update(action);
         }
-    }
-
-    public void commence() {
-        run();
     }
 
 

@@ -6,9 +6,11 @@ public class ZickZack extends Regelung{
 
 	private static ZickZack INSTANCE;
 
-	private boolean lastTurn = false;
+	private final int LOW_SPEED = 100;
 
-	private double speed = 1.5;
+	private final int HIGH_SPEED = 300;
+
+	private final double SPEED_MULTIPLIER = 1.5;
 
 	private ZickZack(){
 	}
@@ -23,24 +25,18 @@ public class ZickZack extends Regelung{
 	@Override
 	public void act(int colorSensorValue, int ultrasoundSensorValue) {
 
-        if(lastTurn) {
-			Motor.A.setSpeed((int) (300*speed));
-			Motor.B.setSpeed((int) (100*speed));
+        if(colorSensorValue <LIGHT_THRESHOLD) {
+			Motor.A.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
+			Motor.B.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
 			
 			Motor.B.forward();
 			Motor.A.forward();
-			if(colorSensorValue <LIGHT_THRESHOLD) {
-				lastTurn = !lastTurn;
-			}
 		}else {
-			Motor.B.setSpeed((int) (300*speed));
-			Motor.A.setSpeed((int) (100*speed));
+			Motor.B.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
+			Motor.A.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
 
 			Motor.B.forward();
 			Motor.A.forward();
-			if(colorSensorValue >=LIGHT_THRESHOLD) {
-				lastTurn = !lastTurn;
-			}
 		}
 	}
 }

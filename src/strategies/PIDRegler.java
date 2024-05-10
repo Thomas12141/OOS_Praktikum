@@ -6,6 +6,16 @@ public class PIDRegler extends Regelung{
 
     private static PIDRegler instance;
 
+    private final int PROPORTION_CONSTANT = 1000;
+
+    private final int INTEGRAL_CONSTANT = 100;
+
+    private final int DERIVATIVE_CONSTANT = 10000;
+
+    private final int PROPORTION_REDUCER = 100;
+
+    private final int TARGET_POWER = 50;
+
     private int integral = 0;
 
     private int lastError = 0;
@@ -19,23 +29,20 @@ public class PIDRegler extends Regelung{
 
     private PIDRegler(){}
 
+    public void resetValues(){
+        integral = 0;
+        lastError = 0;
+    }
+
     @Override
     public void act(int colorSensorValue, int ultrasoundSensorValue) {
-        int proportionConstant = 1000;
-
-        int integralConstant = 100;
-
-        int derivativeConstant = 10000;
-
-
         int error = colorSensorValue - LIGHT_THRESHOLD;
         integral += error;
         int derivative = error - lastError;
-        int turn = proportionConstant * error + integralConstant * integral + derivativeConstant * derivative;
-        turn /= 100;
-        int targetPower = 50;
-        int powerA = targetPower + turn;
-        int powerB = targetPower - turn;
+        int turn = PROPORTION_CONSTANT * error + INTEGRAL_CONSTANT * integral + DERIVATIVE_CONSTANT * derivative;
+        turn /= PROPORTION_REDUCER;;
+        int powerA = TARGET_POWER + turn;
+        int powerB = TARGET_POWER - turn;
         Motor.A.forward();
         Motor.A.setSpeed(powerA);
         Motor.B.forward();
