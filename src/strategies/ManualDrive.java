@@ -1,6 +1,7 @@
 package strategies;
 
 import lejos.nxt.Motor;
+import observer.Action;
 
 public class ManualDrive extends Steuerung{
 
@@ -21,22 +22,22 @@ public class ManualDrive extends Steuerung{
         return INSTANCE;
     }
 
-    public void drive(int command) {
+    public void drive(Action command) {
         switch (command) {
-            case 1: //forward
+            case forward: //forward
                 System.out.println("Driving FORWARD");
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(HIGH_SPEED);
                 break;
-            case 2: //left
+            case left: //left
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(LOW_SPEED);
                 break;
-            case 3: //backward
+            case back: //backward
                 if (Motor.A.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD || Motor.B.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD) { //if the robot is driving straight ahead
                     Motor.A.stop();
                     Motor.B.stop();
@@ -47,7 +48,7 @@ public class ManualDrive extends Steuerung{
                     Motor.B.setSpeed(LOW_SPEED);
                     break;
                 }
-            case 4: //right
+            case right: //right
                 Motor.A.forward();
                 Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.forward();

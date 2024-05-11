@@ -6,7 +6,7 @@ public class StateMachine {
 
     private static StateMachine INSTANCE;
 
-	private State currentState;
+	private volatile State currentState;
 	
 	private StateMachine() {
 		this.currentState = State.LINE_FOUND;
@@ -20,11 +20,11 @@ public class StateMachine {
         return INSTANCE;
     }
 
-    public State getCurrentState() {
+    public synchronized State getCurrentState() {
         return currentState;
     }
     
-    public void setState(State currentState) {
+    public synchronized void setState(State currentState) {
     	this.currentState = currentState;
     }
 }

@@ -8,25 +8,40 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
+import static observer.Action.manual;
+import static observer.State.LINE_FOUND;
+import static observer.State.USER_CTRL;
+
 
 public class Observer implements Subscriber{
-	private final StateMachine stateMachine;
-	
-	public Observer() {
-		this.stateMachine = StateMachine.getInstance();
-	}
+	private static Observer INSTANCE;
 
-	private BTBrick brick = BTBrick.getInstance(this);
-	private StateMachine stateMachine;
-	private IDriveStrategy currentStrategy = getStrategy();
-	private UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
-	private ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
-	private final int LIGHT_THRESHOLD = 35;
-	public Observer() {
+	private final StateMachine stateMachine;
+
+	private Action action;
+
+	private int stateCounter = 0;
+
+	private final int HOW_LONG_OUTSIDE_LINE = 50;
+
+	private Observer() {
 		this.stateMachine = StateMachine.getInstance();
-		
+
 		colorSensor.setFloodlight(true);
 	}
+
+	public static Observer getINSTANCE() {
+		if(INSTANCE == null) {
+			INSTANCE = new Observer();
+		}
+		return INSTANCE;
+	}
+
+	private Regelung currentStrategy = (Regelung) getStrategy();
+	private final UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
+	private final ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
+	private final int LIGHT_THRESHOLD = 35;
+
 
 	
 	public void updateState() {
@@ -34,9 +49,13 @@ public class Observer implements Subscriber{
 		// Setzen der States
 		int lightV = colorSensor.getLightValue();
 		if(lightV < LIGHT_THRESHOLD) {
-			stateMachine.setState(State.LINE_LOST);
+			stateCounter++;
+			if(stateCounter == HOW_LONG_OUTSIDE_LINE) {
+				stateCounter = 0;
+				stateMachine.setState(State.LINE_LOST);
+			}
 		}else {
-			stateMachine.setState(State.LINE_FOUND);
+			stateMachine.setState(LINE_FOUND);
 		}
 		
 		
@@ -44,47 +63,53 @@ public class Observer implements Subscriber{
     }
 	
 	public void act() {
-		updateState();
-		currentStrategy = getStrategy();
-		currentStrategy.act(colorSensor, sensor);
+		if(stateMachine.getCurrentState() == USER_CTRL){
+			ManualDrive.getInstance().drive(action);
+		}else {
+			updateState();
+			currentStrategy = (Regelung) getStrategy();
+			currentStrategy.act(colorSensor.getLightValue(), sensor.getDistance());
+		}
 	}
 	
 	public IDriveStrategy getStrategy() {
 
 		State currentState = stateMachine.getCurrentState();
-
+		IDriveStrategy iDriveStrategy;
 		switch (currentState) {
 		case LINE_FOUND:
-			return PIDRegler.getInstance();
+			iDriveStrategy = PIDRegler.getInstance();
+			break;
 		case LINE_LOST:
-			return BackOnTrack.getInstance();
+			iDriveStrategy =  BackOnTrack.getInstance();
+			break;
 		default:
-			return ManualDrive.getInstance();
+			iDriveStrategy =  ManualDrive.getInstance();
 		}
+		if(iDriveStrategy instanceof Regelung){
+			((Regelung)iDriveStrategy).resetValues();
+		}
+		return iDriveStrategy;
 	}
 	
 	
 	public boolean getUserState() {
-		if (stateMachine.getCurrentState() == State.USER_CTRL) { 
-			return true;
-		} else {
-			return false;
-		}
+        return stateMachine.getCurrentState() == USER_CTRL;
 	}
-	
+
+	@Override
 	public void update(Action action) {
-		State state = stateMachine.getCurrentState();
-		 
-		if(state != State.USER_CTRL) {
-			if(action == Action.manual) {
-				stateMachine.setState(State.USER_CTRL);
+		if(action == manual){
+			State state = stateMachine.getCurrentState();
+
+			if(state != USER_CTRL) {
+				stateMachine.setState(USER_CTRL);
+			}else {
+				stateMachine.setState(LINE_FOUND);
 			}
 		}else {
-			if(action == Action.manual) {
-				updateState();
-			}else {
-				brick.drive(action);
-			}
+			this.action = action;
 		}
+
 	}
 }
