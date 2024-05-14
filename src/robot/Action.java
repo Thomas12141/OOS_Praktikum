@@ -1,4 +1,4 @@
-package observer;
+package robot;
 
 public enum Action {
 	forward,

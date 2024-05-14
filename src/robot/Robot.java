@@ -1,4 +1,4 @@
-package observer;
+package robot;
 
 import btbrick.BTBrick;
 import interfaces.IDriveStrategy;
@@ -8,14 +8,18 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
-import static observer.Action.manual;
-import static observer.State.LINE_FOUND;
-import static observer.State.USER_CTRL;
+import static robot.Action.manual;
+import static robot.State.LINE_FOUND;
+import static robot.State.USER_CTRL;
+
+import Sensors.SensorService;
 
 
-public class Observer implements Subscriber{
-	private static Observer INSTANCE;
-
+public class Robot implements Subscriber{
+	private static Robot INSTANCE;
+	
+	private final SensorService sensorService;
+	
 	private final StateMachine stateMachine;
 
 	private Action action;
@@ -24,30 +28,30 @@ public class Observer implements Subscriber{
 
 	private final int HOW_LONG_OUTSIDE_LINE = 50;
 
-	private Observer() {
-		this.stateMachine = StateMachine.getInstance();
 
-		colorSensor.setFloodlight(true);
+	private IDriveStrategy currentStrategy;
+	private final int LIGHT_THRESHOLD = 35;
+
+	private Robot() {
+		this.stateMachine = StateMachine.getInstance();
+		this.sensorService = SensorService.getInstance();
+
+
 	}
 
-	public static Observer getINSTANCE() {
+	public static Robot getInstance() {
 		if(INSTANCE == null) {
-			INSTANCE = new Observer();
+			INSTANCE = new Robot();
 		}
 		return INSTANCE;
 	}
-
-	private Regelung currentStrategy = (Regelung) getStrategy();
-	private final UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S1);
-	private final ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
-	private final int LIGHT_THRESHOLD = 35;
 
 
 	
 	public void updateState() {
         // Auswerten der Sensoren
 		// Setzen der States
-		int lightV = colorSensor.getLightValue();
+		int lightV = sensorService.colorSensor.getLightValue();
 		if(lightV < LIGHT_THRESHOLD) {
 			stateCounter++;
 			if(stateCounter == HOW_LONG_OUTSIDE_LINE) {
@@ -63,13 +67,8 @@ public class Observer implements Subscriber{
     }
 	
 	public void act() {
-		if(stateMachine.getCurrentState() == USER_CTRL){
-			ManualDrive.getInstance().drive(action);
-		}else {
-			updateState();
-			currentStrategy = (Regelung) getStrategy();
-			currentStrategy.act(colorSensor.getLightValue(), sensor.getDistance());
-		}
+		currentStrategy = getStrategy();
+		currentStrategy.act(sensorService);
 	}
 	
 	public IDriveStrategy getStrategy() {
@@ -86,9 +85,7 @@ public class Observer implements Subscriber{
 		default:
 			iDriveStrategy =  ManualDrive.getInstance();
 		}
-		if(iDriveStrategy instanceof Regelung){
-			((Regelung)iDriveStrategy).resetValues();
-		}
+		iDriveStrategy.resetValues();
 		return iDriveStrategy;
 	}
 	

@@ -1,6 +1,5 @@
-package observer;
+package robot;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
 public class StateMachine {
 

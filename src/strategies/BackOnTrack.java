@@ -1,8 +1,10 @@
 package strategies;
 
+import Sensors.SensorService;
+import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 
-public class BackOnTrack extends Regelung{
+public class BackOnTrack implements IDriveStrategy{
 
     private static BackOnTrack INSTANCE;
 
@@ -28,7 +30,8 @@ public class BackOnTrack extends Regelung{
     }
 
     @Override
-    public void act(int colorSensorValue, int ultrasoundSensorValue) {
+    public void act(SensorService sensorService) {
+    	int colorSensorValue = sensorService.colorSensor.getLightValue();
         if(colorSensorValue>LIGHT_THRESHOLD) {
             System.out.println("Linie gefunen!");
             return;

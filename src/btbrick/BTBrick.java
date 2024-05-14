@@ -1,16 +1,13 @@
 package btbrick;
 
-import lejos.nxt.Motor;
-import lejos.nxt.comm.BTConnection;
-import lejos.nxt.comm.Bluetooth;
-import observer.Action;
-import observer.Observer;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import interfaces.Subscriber;
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
+import robot.Action;
 
 public class BTBrick implements Runnable{
 

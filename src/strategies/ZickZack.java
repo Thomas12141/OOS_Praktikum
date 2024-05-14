@@ -1,8 +1,10 @@
 package strategies;
 
+import Sensors.SensorService;
+import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 
-public class ZickZack extends Regelung{
+public class ZickZack implements IDriveStrategy{
 
 	private static ZickZack INSTANCE;
 
@@ -24,8 +26,8 @@ public class ZickZack extends Regelung{
 
 	public void resetValues(){}
 	@Override
-	public void act(int colorSensorValue, int ultrasoundSensorValue) {
-
+	public void act(SensorService sensorService) {
+		int colorSensorValue = sensorService.colorSensor.getLightValue();
         if(colorSensorValue <LIGHT_THRESHOLD) {
 			Motor.A.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
 			Motor.B.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));

@@ -1,9 +1,11 @@
 package strategies;
 
+import Sensors.SensorService;
+import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
-import observer.Action;
+import robot.Action;
 
-public class ManualDrive extends Steuerung{
+public class ManualDrive implements IDriveStrategy{
 
     private static ManualDrive INSTANCE;
 
@@ -22,8 +24,9 @@ public class ManualDrive extends Steuerung{
         return INSTANCE;
     }
 
-    public void drive(Action command) {
-        switch (command) {
+    public void act(SensorService sensorService) {
+    	Action action = sensorService.bluetoothSensor.getAction();
+        switch (action) {
             case forward: //forward
                 System.out.println("Driving FORWARD");
                 Motor.A.forward();
@@ -54,6 +57,12 @@ public class ManualDrive extends Steuerung{
                 Motor.B.forward();
                 Motor.B.setSpeed(LOW_SPEED);
                 break;
+            case manual:
+            	break;
         }
     }
+
+	@Override
+	public void resetValues() {
+	}
 }

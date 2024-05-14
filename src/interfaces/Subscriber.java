@@ -1,6 +1,6 @@
 package interfaces;
 
-import observer.Action;
+import robot.Action;
 
 public interface Subscriber {
 	void update(Action action);

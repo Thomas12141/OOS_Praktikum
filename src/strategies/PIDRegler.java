@@ -1,20 +1,22 @@
 package strategies;
 
+import Sensors.SensorService;
+import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 
-public class PIDRegler extends Regelung{
+public class PIDRegler implements IDriveStrategy{
 
     private static PIDRegler instance;
 
     private final int PROPORTION_CONSTANT = 1000;
 
-    private final int INTEGRAL_CONSTANT = 100;
+    private final int INTEGRAL_CONSTANT = 0;
 
-    private final int DERIVATIVE_CONSTANT = 10000;
+    private final int DERIVATIVE_CONSTANT = 0;
 
     private final int PROPORTION_REDUCER = 100;
 
-    private final int TARGET_POWER = 50;
+    private final int TARGET_POWER = 25;
 
     private int integral = 0;
 
@@ -36,7 +38,8 @@ public class PIDRegler extends Regelung{
     }
 
     @Override
-    public void act(int colorSensorValue, int ultrasoundSensorValue) {
+    public void act(SensorService sensorService) {
+    	int colorSensorValue = sensorService.colorSensor.getLightValue();
         int error = colorSensorValue - LIGHT_THRESHOLD;
         integral += error;
         int derivative = error - lastError;
