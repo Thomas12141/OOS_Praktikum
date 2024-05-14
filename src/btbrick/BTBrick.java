@@ -54,9 +54,13 @@ public class BTBrick implements Runnable{
                 e1.printStackTrace();
             }
 
-            if(length>1) {
+            if(length>0) {
                 try {
-                    Action commandBT = Action.values()[inputStream.readInt()];
+                	int index = inputStream.readInt();
+                	System.out.print("Index: " + index + "\n");
+                    Action commandBT = Action.values()[index];
+                    System.out.print("Command recieved: " + commandBT + "\n");
+                    notifySubscribers(commandBT);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

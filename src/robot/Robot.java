@@ -96,6 +96,8 @@ public class Robot implements Subscriber{
 
 	@Override
 	public void update(Action action) {
+
+        System.out.print("Robot updated: " + action + "\n");
 		if(action == manual){
 			State state = stateMachine.getCurrentState();
 

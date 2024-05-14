@@ -55,9 +55,9 @@ public class ManualDrive implements IDriveStrategy{
                 Motor.A.forward();
                 Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.forward();
-                Motor.B.setSpeed(LOW_SPEED);
+                Motor.B.setSpeed(HIGH_SPEED);
                 break;
-            case manual:
+            default:
             	break;
         }
     }
