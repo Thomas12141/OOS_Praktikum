@@ -1,11 +1,11 @@
-package Sensors;
+package sensors;
 
 import interfaces.Subscriber;
 import robot.Action;
 
-public class BluetoothSensor implements Subscriber{
-	private static BluetoothSensor INSTANCE;
-	
+public class BluetoothSensor implements Subscriber {
+	private static BluetoothSensor instance;
+
 	private volatile Action action;
 	
 	private BluetoothSensor() {
@@ -13,10 +13,10 @@ public class BluetoothSensor implements Subscriber{
 	}
 	
 	public static BluetoothSensor getInstance() {
-		if(INSTANCE == null) {
-			INSTANCE = new BluetoothSensor();
+		if (instance == null) {
+			instance = new BluetoothSensor();
 		}
-		return INSTANCE;
+		return instance;
 	}
 	public synchronized Action getAction() {
 		return action;

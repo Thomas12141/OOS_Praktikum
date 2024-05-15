@@ -1,12 +1,12 @@
 package interfaces;
 
-import Sensors.SensorService;
+import sensors.SensorService;
 
 public interface IDriveStrategy {
 	
-	public abstract void act(SensorService sensorService);
+	void act(SensorService sensorService);
 
-	public abstract void resetValues();
+	void resetValues();
 	
-	public final int LIGHT_THRESHOLD = 35;
+	int LIGHT_THRESHOLD = 35;
 }

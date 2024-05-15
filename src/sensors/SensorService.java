@@ -1,20 +1,20 @@
-package Sensors;
+package sensors;
 
 import lejos.nxt.ColorSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 
 public class SensorService {
-	private static SensorService INSTANCE;
+	private static SensorService instance;
 	public final UltrasonicSensor ultrasonicSensor;
 	public final ColorSensor colorSensor;
 	public final BluetoothSensor bluetoothSensor;
 	
 	public static SensorService getInstance() {
-		if(INSTANCE == null) {
-			INSTANCE = new SensorService();
+		if (instance == null) {
+			instance = new SensorService();
 		}
-		return INSTANCE;
+		return instance;
 	}
 	private SensorService() {
 		ultrasonicSensor = new UltrasonicSensor(SensorPort.S1);

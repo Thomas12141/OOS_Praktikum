@@ -1,38 +1,38 @@
 package strategies;
 
-import Sensors.SensorService;
+import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 
-public class PIDRegler implements IDriveStrategy{
+public class PIDRegler implements IDriveStrategy {
 
     private static PIDRegler instance;
 
-    private final int PROPORTION_CONSTANT = 1000;
+    private static final int PROPORTION_CONSTANT = 1000;
 
-    private final int INTEGRAL_CONSTANT = 0;
+    private static final int INTEGRAL_CONSTANT = 0;
 
-    private final int DERIVATIVE_CONSTANT = 0;
+    private static final int DERIVATIVE_CONSTANT = 0;
 
-    private final int PROPORTION_REDUCER = 100;
+    private static final int PROPORTION_REDUCER = 100;
 
-    private final int TARGET_POWER = 25;
+    private static final int TARGET_POWER = 25;
 
     private int integral = 0;
 
     private int lastError = 0;
 
-    public static PIDRegler getInstance(){
-        if(instance == null){
+    public static PIDRegler getInstance() {
+        if (instance == null) {
             instance = new PIDRegler();
         }
         return instance;
     }
 
-    private PIDRegler(){}
+    private PIDRegler() { }
 
     @Override
-    public void resetValues(){
+    public void resetValues() {
         integral = 0;
         lastError = 0;
     }

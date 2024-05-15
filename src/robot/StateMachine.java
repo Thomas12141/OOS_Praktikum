@@ -3,7 +3,7 @@ package robot;
 
 public class StateMachine {
 
-    private static StateMachine INSTANCE;
+    private static StateMachine instance;
 
 	private volatile State currentState;
 	
@@ -13,10 +13,10 @@ public class StateMachine {
 	}
 
     public static StateMachine getInstance() {
-        if(INSTANCE == null){
-            INSTANCE = new StateMachine();
+        if (instance == null) {
+            instance = new StateMachine();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public synchronized State getCurrentState() {

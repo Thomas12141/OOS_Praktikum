@@ -1,36 +1,29 @@
 package robot;
 
-import btbrick.BTBrick;
 import interfaces.IDriveStrategy;
 import interfaces.Subscriber;
-import lejos.nxt.ColorSensor;
-import lejos.nxt.SensorPort;
-import lejos.nxt.UltrasonicSensor;
 import strategies.*;
 
-import static robot.Action.manual;
+import static robot.Action.MANUAL;
 import static robot.State.LINE_FOUND;
 import static robot.State.USER_CTRL;
 
-import Sensors.SensorService;
+import sensors.SensorService;
 
 
-public class Robot implements Subscriber{
-	private static Robot INSTANCE;
+public class Robot implements Subscriber {
+	private static Robot instance;
 	
 	private final SensorService sensorService;
 	
 	private final StateMachine stateMachine;
 
-	private Action action;
-
 	private int stateCounter = 0;
 
-	private final int HOW_LONG_OUTSIDE_LINE = 50;
+	private static final int HOW_LONG_OUTSIDE_LINE = 50;
 
 
-	private IDriveStrategy currentStrategy;
-	private final int LIGHT_THRESHOLD = 35;
+    private static final int LIGHT_THRESHOLD = 35;
 
 	private Robot() {
 		this.stateMachine = StateMachine.getInstance();
@@ -40,10 +33,10 @@ public class Robot implements Subscriber{
 	}
 
 	public static Robot getInstance() {
-		if(INSTANCE == null) {
-			INSTANCE = new Robot();
+		if (instance == null) {
+			instance = new Robot();
 		}
-		return INSTANCE;
+		return instance;
 	}
 
 
@@ -52,13 +45,13 @@ public class Robot implements Subscriber{
         // Auswerten der Sensoren
 		// Setzen der States
 		int lightV = sensorService.colorSensor.getLightValue();
-		if(lightV < LIGHT_THRESHOLD) {
+		if (lightV < LIGHT_THRESHOLD) {
 			stateCounter++;
-			if(stateCounter == HOW_LONG_OUTSIDE_LINE) {
+			if (stateCounter == HOW_LONG_OUTSIDE_LINE) {
 				stateCounter = 0;
 				stateMachine.setState(State.LINE_LOST);
 			}
-		}else {
+		} else {
 			stateMachine.setState(LINE_FOUND);
 		}
 		
@@ -67,7 +60,7 @@ public class Robot implements Subscriber{
     }
 	
 	public void act() {
-		currentStrategy = getStrategy();
+        IDriveStrategy currentStrategy = getStrategy();
 		currentStrategy.act(sensorService);
 	}
 	
@@ -98,16 +91,14 @@ public class Robot implements Subscriber{
 	public void update(Action action) {
 
         System.out.print("Robot updated: " + action + "\n");
-		if(action == manual){
+		if (action == MANUAL) {
 			State state = stateMachine.getCurrentState();
 
-			if(state != USER_CTRL) {
+			if (state != USER_CTRL) {
 				stateMachine.setState(USER_CTRL);
-			}else {
+			} else {
 				stateMachine.setState(LINE_FOUND);
 			}
-		}else {
-			this.action = action;
 		}
 
 	}

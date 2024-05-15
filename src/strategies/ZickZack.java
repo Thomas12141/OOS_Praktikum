@@ -1,39 +1,42 @@
 package strategies;
 
-import Sensors.SensorService;
+import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 
-public class ZickZack implements IDriveStrategy{
+public class ZickZack implements IDriveStrategy {
 
-	private static ZickZack INSTANCE;
+	private static ZickZack instance;
 
-	private final int LOW_SPEED = 100;
+	private static final int LOW_SPEED = 100;
 
-	private final int HIGH_SPEED = 300;
+	private static final int HIGH_SPEED = 300;
 
-	private final double SPEED_MULTIPLIER = 1.5;
+	private static final double SPEED_MULTIPLIER = 1.5;
 
-	private ZickZack(){
+	private ZickZack() {
 	}
 
-	public static ZickZack getInstance(){
-		if(INSTANCE == null){
-			INSTANCE = new ZickZack();
+	public static ZickZack getInstance() {
+		if (instance == null) {
+			instance = new ZickZack();
 		}
-		return INSTANCE;
+		return instance;
 	}
 
-	public void resetValues(){}
+	@Override
+	public void resetValues() { //No values to rest.
+	}
+
 	@Override
 	public void act(SensorService sensorService) {
 		int colorSensorValue = sensorService.colorSensor.getLightValue();
-        if(colorSensorValue <LIGHT_THRESHOLD) {
-			Motor.A.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
-			Motor.B.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
-		}else {
-			Motor.B.setSpeed((int) (HIGH_SPEED* SPEED_MULTIPLIER));
-			Motor.A.setSpeed((int) (LOW_SPEED* SPEED_MULTIPLIER));
+        if (colorSensorValue < LIGHT_THRESHOLD) {
+			Motor.A.setSpeed((int) (HIGH_SPEED * SPEED_MULTIPLIER));
+			Motor.B.setSpeed((int) (LOW_SPEED * SPEED_MULTIPLIER));
+		} else {
+			Motor.B.setSpeed((int) (HIGH_SPEED * SPEED_MULTIPLIER));
+			Motor.A.setSpeed((int) (LOW_SPEED * SPEED_MULTIPLIER));
 		}
 		Motor.B.forward();
 		Motor.A.forward();
