@@ -2,8 +2,8 @@ package robot;
 
 public enum Action {
 	FORWARD,
-	BACK,
 	LEFT,
+	BACK,
 	RIGHT,
 	MANUAL
 }
