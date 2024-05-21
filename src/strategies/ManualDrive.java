@@ -1,59 +1,69 @@
 package strategies;
 
+import sensors.SensorService;
+import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
-import observer.Action;
+import robot.Action;
 
-public class ManualDrive extends Steuerung{
+public class ManualDrive implements IDriveStrategy {
 
-    private static ManualDrive INSTANCE;
+    private static ManualDrive instance;
 
-    private final int LOW_SPEED = 100;
+    private static final int LOW_SPEED = 100;
 
-    private final int HIGH_SPEED = 300;
+    private static final int HIGH_SPEED = 300;
 
-    private final int BORDER_BETWEEN_BACKWARD_AND_FORWARD = 0;
+    private static final int BORDER_BETWEEN_BACKWARD_AND_FORWARD = 0;
 
-    private ManualDrive(){}
+    private ManualDrive() { }
 
-    public static ManualDrive getInstance(){
-        if(INSTANCE == null){
-            INSTANCE = new ManualDrive();
+    public static ManualDrive getInstance() {
+        if (instance == null) {
+            instance = new ManualDrive();
         }
-        return INSTANCE;
+        return instance;
     }
 
-    public void drive(Action command) {
-        switch (command) {
-            case forward: //forward
+    public void act(SensorService sensorService) {
+    	Action action = sensorService.bluetoothSensor.getAction();
+        switch (action) {
+            case FORWARD: //forward
                 System.out.println("Driving FORWARD");
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(HIGH_SPEED);
                 break;
-            case left: //left
+            case LEFT: //left
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(LOW_SPEED);
                 break;
-            case back: //backward
-                if (Motor.A.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD || Motor.B.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD) { //if the robot is driving straight ahead
+            case BACK: //backward
+                //if the robot is driving straight ahead
+                if (Motor.A.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD
+                        || Motor.B.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD) {
                     Motor.A.stop();
                     Motor.B.stop();
-                } else {
-                    Motor.A.backward();
-                    Motor.A.setSpeed(LOW_SPEED);
-                    Motor.B.backward();
-                    Motor.B.setSpeed(LOW_SPEED);
-                    break;
                 }
-            case right: //right
+                Motor.A.backward();
+                Motor.A.setSpeed(LOW_SPEED);
+                Motor.B.backward();
+                Motor.B.setSpeed(LOW_SPEED);
+                break;
+            case RIGHT: //right
                 Motor.A.forward();
                 Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.forward();
-                Motor.B.setSpeed(LOW_SPEED);
+                Motor.B.setSpeed(HIGH_SPEED);
                 break;
+            default:
+            	break;
         }
     }
+
+	@Override
+	public void resetValues() { //No values to update.
+	}
 }

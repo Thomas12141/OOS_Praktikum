@@ -1,18 +1,14 @@
 package btbrick;
 
-import lejos.nxt.Motor;
-import lejos.nxt.comm.BTConnection;
-import lejos.nxt.comm.Bluetooth;
-import observer.Action;
-import observer.Observer;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import interfaces.Subscriber;
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
+import robot.Action;
 
-public class BTBrick implements Runnable{
+public final class BTBrick implements Runnable {
 
     private final ArrayList<Subscriber> subscribers = new ArrayList<>();
 
@@ -49,7 +45,7 @@ public class BTBrick implements Runnable{
     @Override
     public void run() {
         init();
-        while(true) {
+        while (true) {
             int length = 0;
             try {
                 length = inputStream.available();
@@ -57,9 +53,13 @@ public class BTBrick implements Runnable{
                 e1.printStackTrace();
             }
 
-            if(length>1) {
+            if (length > 0) {
                 try {
-                    Action commandBT = Action.values()[inputStream.readInt()];
+                	int index = inputStream.readInt();
+                	System.out.print("Index: " + index + "\n");
+                    Action commandBT = Action.values()[index];
+                    System.out.print("Command recieved: " + commandBT + "\n");
+                    notifySubscribers(commandBT);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -71,12 +71,13 @@ public class BTBrick implements Runnable{
         subscribers.add(subscriber);
     }
 
+    @SuppressWarnings("unused")
     public void unsubscribe(Subscriber subscriber) {
         subscribers.remove(subscriber);
     }
 
     public void notifySubscribers(Action action) {
-        for(Subscriber subscriber: subscribers) {
+        for (Subscriber subscriber: subscribers) {
             subscriber.update(action);
         }
     }

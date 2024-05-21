@@ -1,10 +1,9 @@
-package observer;
+package robot;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
 public class StateMachine {
 
-    private static StateMachine INSTANCE;
+    private static StateMachine instance;
 
 	private volatile State currentState;
 	
@@ -14,10 +13,10 @@ public class StateMachine {
 	}
 
     public static StateMachine getInstance() {
-        if(INSTANCE == null){
-            INSTANCE = new StateMachine();
+        if (instance == null) {
+            instance = new StateMachine();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public synchronized State getCurrentState() {

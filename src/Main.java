@@ -1,16 +1,18 @@
+import sensors.BluetoothSensor;
 import btbrick.BTBrick;
 import lejos.nxt.*;
-import observer.Observer;
+import robot.Robot;
 
 public class Main {
 	public static void main(String[] args) {
 		BTBrick brick = BTBrick.getInstance();
-		Observer observer = Observer.getINSTANCE();
-		brick.register(observer);
+		Robot robot = Robot.getInstance();
+		brick.register(BluetoothSensor.getInstance());
+		brick.register(robot);
 		Thread thread = new Thread(brick);
 		thread.start();
-		while(!Button.ENTER.isDown()) {
-			observer.act();
+		while (!Button.ENTER.isDown()) {
+			robot.act();
 		}
 		thread.interrupt();
 	}
