@@ -8,19 +8,26 @@ import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 import robot.Action;
 
+/**
+ * The class, which runs the bluetooth connection to the controller and reads the input stream.
+ * It gets a subscriber list, in which the possible subscribers can subscribe to get updates.
+ */
 public final class BTBrick implements Runnable {
-
+    /** The list of subscriber */
     private final ArrayList<Subscriber> subscribers = new ArrayList<>();
-
-
+    /** The bluetooth connection */
     private BTConnection btconnection;
-
+    /** The data input stream from bluetooth */
     private DataInputStream inputStream;
-
+    /** The BTBrick instance for singleton */
     private static BTBrick instance;
 
 
-    // Singleton implementation for BTBrick
+    /**
+     * This method creates an instance or returns the instance already created.
+     *
+     * @return the BRBrick instance
+     */
     public static BTBrick getInstance() {
         if (instance == null) {
             instance = new BTBrick();
@@ -28,10 +35,15 @@ public final class BTBrick implements Runnable {
         return instance;
     }
 
+    /**
+     * The constructor.
+     */
     private BTBrick() {
     }
 
-
+    /**
+     * This method inits the bluetooth connection and prints the status to the console.
+     */
     private void init() {
         if (btconnection == null) {
             System.out.println("Waiting for input stream...");
@@ -41,7 +53,11 @@ public final class BTBrick implements Runnable {
         }
     }
 
-
+    /**
+     * The run method for the threaded input stream reading process.
+     * First it runs the init process, and then it gets into an endless
+     * while loop for reading the input stream.
+     */
     @Override
     public void run() {
         init();
@@ -67,15 +83,28 @@ public final class BTBrick implements Runnable {
         }
     }
 
+    /**
+     * Adds the subscriber to subscriber array.
+     * @param subscriber the subscriber to subscribe
+     */
     public void register(Subscriber subscriber) {
         subscribers.add(subscriber);
     }
 
+    /**
+     * Remove the subscriber to subscriber array.
+     * @param subscriber the subscriber to remove from list
+     */
     @SuppressWarnings("unused")
     public void unsubscribe(Subscriber subscriber) {
         subscribers.remove(subscriber);
     }
 
+    /**
+     * This method notifies all subscribers with an update.
+     *
+     * @param action the read action from input stream
+     */
     public void notifySubscribers(Action action) {
         for (Subscriber subscriber: subscribers) {
             subscriber.update(action);

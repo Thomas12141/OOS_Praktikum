@@ -10,28 +10,54 @@ import static robot.State.USER_CTRL;
 
 import sensors.SensorService;
 
-
+/**
+ * The class, which holds the sensor service, state machine and updates the state.
+ */
 public class Robot implements Subscriber {
+	/**
+	 * The only instance of this class.
+	 */
 	private static Robot instance;
-	
+
+	/**
+	 * The sensor service.
+	 */
 	private final SensorService sensorService;
-	
+
+	/**
+	 * The state machine.
+	 */
 	private final StateMachine stateMachine;
 
+	/**
+	 * A state counter.
+	 */
 	private int stateCounter = 0;
 
+	/**
+	 * This variable is set to control how long the NXT is outside the path.
+	 */
 	private static final int HOW_LONG_OUTSIDE_LINE = 50;
 
-
+	/**
+	 * Light threshold to calibrate the light sensor.
+	 */
     private static final int LIGHT_THRESHOLD = 35;
 
+	/**
+	 * The constructor.
+	 */
 	private Robot() {
 		this.stateMachine = StateMachine.getInstance();
 		this.sensorService = SensorService.getInstance();
-
-
 	}
 
+	/**
+	 * The method which implements the singleton pattern and return the instance or create one,
+	 * if there is no one.
+	 *
+	 * @return the instance of robot
+	 */
 	public static Robot getInstance() {
 		if (instance == null) {
 			instance = new Robot();
@@ -39,11 +65,13 @@ public class Robot implements Subscriber {
 		return instance;
 	}
 
-
-	
+	/**
+	 * Updates the state with the light sensor to line lost or line found.
+	 */
 	public void updateState() {
         // Auswerten der Sensoren
 		// Setzen der States
+		if (stateMachine.getCurrentState() == USER_CTRL) return;
 		int lightV = sensorService.colorSensor.getLightValue();
 		if (lightV < LIGHT_THRESHOLD) {
 			stateCounter++;
@@ -54,18 +82,23 @@ public class Robot implements Subscriber {
 		} else {
 			stateMachine.setState(LINE_FOUND);
 		}
-		
-		
-		
     }
-	
+
+	/**
+	 * The act method which calls the act methods of the strategies.
+	 */
 	public void act() {
         IDriveStrategy currentStrategy = getStrategy();
 		currentStrategy.act(sensorService);
 	}
-	
-	public IDriveStrategy getStrategy() {
 
+	/**
+	 * Returns the strategy to act due to the state.
+	 *
+	 * @return the appropriate strategy
+	 */
+	public IDriveStrategy getStrategy() {
+		updateState();
 		State currentState = stateMachine.getCurrentState();
 		IDriveStrategy iDriveStrategy;
 		switch (currentState) {
@@ -81,12 +114,21 @@ public class Robot implements Subscriber {
 		iDriveStrategy.resetValues();
 		return iDriveStrategy;
 	}
-	
-	
+
+	/**
+	 * Returns true if the user state is the current state, otherwise false.
+	 *
+	 * @return true -> current state is USR_CTRL, false -> otherwise
+	 */
 	public boolean getUserState() {
         return stateMachine.getCurrentState() == USER_CTRL;
 	}
 
+	/**
+	 * The update method, which can be called to perform on the read action.
+	 *
+	 * @param action a read action of the bluetooth stream
+	 */
 	@Override
 	public void update(Action action) {
 
