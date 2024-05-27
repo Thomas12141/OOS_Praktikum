@@ -133,14 +133,11 @@ public class Robot implements Subscriber {
 	public void update(Action action) {
 
         System.out.print("Robot updated: " + action + "\n");
-		if (action == MANUAL) {
-			State state = stateMachine.getCurrentState();
-
-			if (state != USER_CTRL) {
-				stateMachine.setState(USER_CTRL);
-			} else {
-				stateMachine.setState(LINE_FOUND);
-			}
+		State state = stateMachine.getCurrentState();
+		if ( action == MANUAL && state != USER_CTRL) {
+			stateMachine.setState(USER_CTRL);
+		} else if ( action == MANUAL ) {
+			stateMachine.setState(LINE_FOUND);
 		}
 
 	}
