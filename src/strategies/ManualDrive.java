@@ -43,36 +43,37 @@ public class ManualDrive implements IDriveStrategy {
     	Action action = sensorService.bluetoothSensor.getAction();
         switch (action) {
             case FORWARD: //forward
-                System.out.println("Driving FORWARD");
+                System.out.println("Driving FORWARD" + Action.FORWARD);
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(HIGH_SPEED);
                 break;
             case LEFT: //left
-                Motor.A.forward();
-                Motor.A.setSpeed(HIGH_SPEED);
-                Motor.B.forward();
-                Motor.B.setSpeed(LOW_SPEED);
-                break;
-            case BACK: //backward
-                //if the robot is driving straight ahead
-                if (Motor.A.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD
-                        || Motor.B.getSpeed() > BORDER_BETWEEN_BACKWARD_AND_FORWARD) {
-                    Motor.A.stop();
-                    Motor.B.stop();
-                }
-                Motor.A.backward();
+            	System.out.println("Driving LEFT" + Action.LEFT);
                 Motor.A.setSpeed(LOW_SPEED);
-                Motor.B.backward();
+                Motor.B.setSpeed(HIGH_SPEED);
+                Motor.A.forward();
+                Motor.B.forward();
+                break;
+            case BACKWARD: //backward
+                System.out.println("Driving BACK" + Action.BACKWARD);
+                Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.setSpeed(LOW_SPEED);
+                Motor.B.backward();
+                Motor.A.backward();
                 break;
             case RIGHT: //right
+            	System.out.println("Driving RIGHT" + Action.RIGHT);
+                Motor.B.setSpeed(LOW_SPEED);
+                Motor.A.setSpeed(HIGH_SPEED);
                 Motor.A.forward();
-                Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.forward();
-                Motor.B.setSpeed(HIGH_SPEED);
                 break;
+            case STOP: //brake
+            	System.out.println("Driving STOP" + Action.STOP);
+            	Motor.A.stop();
+            	Motor.B.stop();
             default:
             	break;
         }
