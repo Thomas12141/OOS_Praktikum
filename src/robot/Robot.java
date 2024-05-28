@@ -14,6 +14,12 @@ import sensors.SensorService;
  * The class, which holds the sensor service, state machine and updates the state.
  */
 public class Robot implements Subscriber {
+	
+	
+	private static int max = 0;
+	private static int min = 200;
+	
+	public static int LIGHT_THRESHOLD = (max+min)/2;
 	/**
 	 * The only instance of this class.
 	 */
@@ -39,10 +45,7 @@ public class Robot implements Subscriber {
 	 */
 	private static final int HOW_LONG_OUTSIDE_LINE = 100;
 
-	/**
-	 * Light threshold to calibrate the light sensor.
-	 */
-    private static final int LIGHT_THRESHOLD = 32;
+
 
 	/**
 	 * The constructor.
@@ -73,6 +76,15 @@ public class Robot implements Subscriber {
 		// Setzen der States
 		if (stateMachine.getCurrentState() == USER_CTRL) return;
 		int lightV = sensorService.colorSensor.getLightValue();
+		if(lightV<min) {
+			min = lightV;
+			System.out.println("min: " + min);
+		}
+		if(lightV>max) {
+			max = lightV;
+			System.out.println("max: " + max);
+		}
+		LIGHT_THRESHOLD = (max+min)/2;
 		if (lightV < LIGHT_THRESHOLD) {
 			stateCounter++;
 			if (stateCounter == HOW_LONG_OUTSIDE_LINE) {

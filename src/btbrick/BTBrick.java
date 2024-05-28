@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import interfaces.Subscriber;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
-import robot.Action;
 
 /**
  * The class, which runs the bluetooth connection to the controller and reads the input stream.

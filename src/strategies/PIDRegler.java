@@ -4,6 +4,7 @@ import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
 import lejos.util.PIDController;
+import robot.Robot;
 
 /**
  * This class implements the proportional–integral–derivative (PID) controller
@@ -43,7 +44,13 @@ public class PIDRegler implements IDriveStrategy {
      */
     public static PIDRegler getInstance() {
         if (instance == null) {
-        	pid = new PIDController(200, 10);
+        	pid = new PIDController(Robot.LIGHT_THRESHOLD, 0);
+        	pid.setPIDParam(PIDController.PID_I_LIMITHIGH, 450);
+        	pid.setPIDParam(PIDController.PID_I_LIMITLOW, -450);
+        	
+        	pid.setPIDParam(PIDController.PID_KD, 0f);
+        	pid.setPIDParam(PIDController.PID_KI, 0f);
+        	pid.setPIDParam(PIDController.PID_KP, 10f);
             instance = new PIDRegler();
         }
         return instance;
@@ -86,27 +93,14 @@ public class PIDRegler implements IDriveStrategy {
     			TARGET_POWER = value%10000;
     		}
     	}
+    	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.LIGHT_THRESHOLD);
         // Get the current light value from the sensor
         int colorSensorValue = sensorService.colorSensor.getLightValue();
 
-        // Calculate the error value (deviation from the desired light threshold)
-        int error = colorSensorValue - LIGHT_THRESHOLD;
 
-        // Update the integral term
-        integral += error;
-
-        // Calculate the derivative term
-        int derivative = error - lastError;
-
-        // Compute the turn value using the PID formula
-        int turn = PROPORTION_CONSTANT * error + INTEGRAL_CONSTANT * integral + DERIVATIVE_CONSTANT * derivative;
-        
-
-    	turn = pid.doPID(PIDController.PID_PV);
+    	int turn = pid.doPID(colorSensorValue);
     	
-        // Reduce the turn value to a manageable range
-        turn /= PROPORTION_REDUCER;
-
+    	System.out.println("pid turn" + turn);
         // Calculate the power for each motor
         int powerA = TARGET_POWER + turn;
         int powerB = TARGET_POWER - turn;
@@ -117,7 +111,5 @@ public class PIDRegler implements IDriveStrategy {
         Motor.B.forward();
         Motor.B.setSpeed(powerB);
 
-        // Update the last error for the next iteration
-        lastError = error;
     }
 }
