@@ -3,29 +3,31 @@ package strategies;
 import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
+import lejos.util.PIDController;
 
 /**
  * This class implements the proportional–integral–derivative (PID) controller
  * to adjust motor speeds and keep the robot on track based on sensor input.
  */
 public class PIDRegler implements IDriveStrategy {
+	private static PIDController pid;
     /** The only instance of this singleton class. */
     private static PIDRegler instance;
 
     /** The proportional constant in the PID formula. */
-    private static final int PROPORTION_CONSTANT = 1000;
+    private static int PROPORTION_CONSTANT = 700;
 
     /** The integral constant in the PID formula. */
-    private static final int INTEGRAL_CONSTANT = 0;
+    private static int INTEGRAL_CONSTANT = 0;
 
     /** The derivative constant in the PID formula. */
-    private static final int DERIVATIVE_CONSTANT = 0;
+    private static int DERIVATIVE_CONSTANT = 0;
 
     /** The factor by which the computed turn value is reduced. */
     private static final int PROPORTION_REDUCER = 100;
 
     /** The target power for the motors. */
-    private static final int TARGET_POWER = 25;
+    private static int TARGET_POWER = 300;
 
     /** Accumulated integral value used in the PID formula. */
     private int integral = 0;
@@ -41,6 +43,7 @@ public class PIDRegler implements IDriveStrategy {
      */
     public static PIDRegler getInstance() {
         if (instance == null) {
+        	pid = new PIDController(200, 10);
             instance = new PIDRegler();
         }
         return instance;
@@ -57,8 +60,8 @@ public class PIDRegler implements IDriveStrategy {
      */
     @Override
     public void resetValues() {
-        integral = 0;
-        lastError = 0;
+        //integral = 0;
+        //lastError = 0;
     }
 
     /**
@@ -69,6 +72,20 @@ public class PIDRegler implements IDriveStrategy {
      */
     @Override
     public void act(SensorService sensorService) {
+    	int value = sensorService.bluetoothSensor.getAction();
+    	if(value/10000>0) {
+    		int option = value/10000;
+    		if(option==4) {
+    			DERIVATIVE_CONSTANT = value%10000;
+    		}else if(option==3) {
+    			INTEGRAL_CONSTANT = value%10000;
+    		}else if(option==2) {
+    			PROPORTION_CONSTANT = value%10000;
+    		}else if(option==1) {
+    			System.out.println("Set of TARGET_POWER to " + value%10000);
+    			TARGET_POWER = value%10000;
+    		}
+    	}
         // Get the current light value from the sensor
         int colorSensorValue = sensorService.colorSensor.getLightValue();
 
@@ -83,7 +100,10 @@ public class PIDRegler implements IDriveStrategy {
 
         // Compute the turn value using the PID formula
         int turn = PROPORTION_CONSTANT * error + INTEGRAL_CONSTANT * integral + DERIVATIVE_CONSTANT * derivative;
+        
 
+    	turn = pid.doPID(PIDController.PID_PV);
+    	
         // Reduce the turn value to a manageable range
         turn /= PROPORTION_REDUCER;
 

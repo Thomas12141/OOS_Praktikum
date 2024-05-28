@@ -37,7 +37,7 @@ public class Robot implements Subscriber {
 	/**
 	 * This variable is set to control how long the NXT is outside the path.
 	 */
-	private static final int HOW_LONG_OUTSIDE_LINE = 50;
+	private static final int HOW_LONG_OUTSIDE_LINE = 100;
 
 	/**
 	 * Light threshold to calibrate the light sensor.
@@ -130,13 +130,12 @@ public class Robot implements Subscriber {
 	 * @param action a read action of the bluetooth stream
 	 */
 	@Override
-	public void update(Action action) {
+	public void update(int action) {
 
-        System.out.print("Robot updated: " + action + "\n");
 		State state = stateMachine.getCurrentState();
-		if ( action == MANUAL && state != USER_CTRL) {
+		if ( action == MANUAL.ordinal() && state != USER_CTRL) {
 			stateMachine.setState(USER_CTRL);
-		} else if ( action == MANUAL ) {
+		} else if ( action == MANUAL.ordinal() ) {
 			stateMachine.setState(LINE_FOUND);
 		}
 

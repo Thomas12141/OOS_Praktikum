@@ -72,10 +72,7 @@ public final class BTBrick implements Runnable {
             if (length > 0) {
                 try {
                 	int index = inputStream.readInt();
-                	System.out.print("Index: " + index + "\n");
-                    Action commandBT = Action.values()[index];
-                    System.out.print("Command recieved: " + commandBT + "\n");
-                    notifySubscribers(commandBT);
+                    notifySubscribers(index);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -105,7 +102,7 @@ public final class BTBrick implements Runnable {
      *
      * @param action the read action from input stream
      */
-    public void notifySubscribers(Action action) {
+    public void notifySubscribers(int action) {
         for (Subscriber subscriber: subscribers) {
             subscriber.update(action);
         }

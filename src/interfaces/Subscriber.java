@@ -1,6 +1,5 @@
 package interfaces;
 
-import robot.Action;
 
 /**
  * The subscriber interface for subscribers, which can be notified by the holder of subscribers.
@@ -11,5 +10,5 @@ public interface Subscriber {
 	 *
 	 * @param action a read action of the bluetooth stream
 	 */
-	void update(Action action);
+	void update(int action);
 }

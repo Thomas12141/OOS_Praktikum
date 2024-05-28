@@ -40,38 +40,37 @@ public class ManualDrive implements IDriveStrategy {
      * @param sensorService the BluetoothSensor instance
      */
     public void act(SensorService sensorService) {
-    	Action action = sensorService.bluetoothSensor.getAction();
+    	int temp = sensorService.bluetoothSensor.getAction();
+    	if(temp>=Action.values().length) {
+    		return;
+    	}
+    	Action action = Action.values()[sensorService.bluetoothSensor.getAction()];
         switch (action) {
             case FORWARD: //forward
-                System.out.println("Driving FORWARD" + Action.FORWARD);
                 Motor.A.forward();
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.B.forward();
                 Motor.B.setSpeed(HIGH_SPEED);
                 break;
             case LEFT: //left
-            	System.out.println("Driving LEFT" + Action.LEFT);
                 Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.setSpeed(HIGH_SPEED);
                 Motor.A.forward();
                 Motor.B.forward();
                 break;
             case BACKWARD: //backward
-                System.out.println("Driving BACK" + Action.BACKWARD);
                 Motor.A.setSpeed(LOW_SPEED);
                 Motor.B.setSpeed(LOW_SPEED);
                 Motor.B.backward();
                 Motor.A.backward();
                 break;
             case RIGHT: //right
-            	System.out.println("Driving RIGHT" + Action.RIGHT);
                 Motor.B.setSpeed(LOW_SPEED);
                 Motor.A.setSpeed(HIGH_SPEED);
                 Motor.A.forward();
                 Motor.B.forward();
                 break;
-            case STOP: //brake
-            	System.out.println("Driving STOP" + Action.STOP);
+            case STOP: //stop
             	Motor.A.stop();
             	Motor.B.stop();
             default:
