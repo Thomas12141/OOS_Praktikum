@@ -42,7 +42,7 @@ public class Robot implements Subscriber {
 	/**
 	 * Light threshold to calibrate the light sensor.
 	 */
-    private static final int LIGHT_THRESHOLD = 35;
+    private static final int LIGHT_THRESHOLD = 32;
 
 	/**
 	 * The constructor.

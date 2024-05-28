@@ -33,8 +33,6 @@ public class PIDRegler implements IDriveStrategy {
     /** Previous error value used to compute the derivative term. */
     private int lastError = 0;
 
-    /** Light threshold for the sensor reading. */
-    private static final int LIGHT_THRESHOLD = 50; // Example value, should be set according to the actual light sensor setup
 
     /**
      * Returns the single instance of the PIDRegler class.

@@ -21,8 +21,6 @@ public class ZickZack implements IDriveStrategy {
 	/** The multiplier to adjust speed for zigzag movement. */
 	private static final double SPEED_MULTIPLIER = 1.5;
 
-	/** Light threshold for the sensor reading. */
-	private static final int LIGHT_THRESHOLD = 50; // Example value, should be set according to the actual light sensor setup
 
 	/**
 	 * Private constructor to enforce the singleton pattern.
