@@ -13,31 +13,6 @@ public class Main {
 	 * @param args the command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
-		int min = 200;
-		int max = 0;
-		ColorSensor colorSensor = new ColorSensor(SensorPort.S4);
-		colorSensor.setFloodlight(true);
-		Motor.A.setSpeed(100);
-		Motor.B.setSpeed(100);
-		Motor.B.forward();
-		Motor.A.forward();
-		while(!Button.ENTER.isDown()) {
-			int value = colorSensor.getLightValue();
-			if (min>value) {
-				min = value;
-			}
-			if(max<value) {
-				max = value;
-			}
-		}
-		System.out.println("min: " + min);
-		System.out.println("max: " + max);
-		try {
-			Thread.sleep(50000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// Initialize the Bluetooth brick
 		BTBrick brick = BTBrick.getInstance();
 
