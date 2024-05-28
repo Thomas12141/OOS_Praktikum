@@ -19,9 +19,10 @@ public interface IDriveStrategy {
 	 * Reset all values.
 	 */
 	void resetValues();
-
+	
+	//Min=15 Max=49 (Max+Min)/2 = 32
 	/**
 	 * The light threshold for light sensor calibration.
 	 */
-	int LIGHT_THRESHOLD = 35;
+	int LIGHT_THRESHOLD = 32;
 }
