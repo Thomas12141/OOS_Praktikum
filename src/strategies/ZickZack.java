@@ -11,7 +11,7 @@ import robot.Robot;
 public class ZickZack implements IDriveStrategy {
 
 	/** The only instance of this singleton class. */
-	private static ZickZack instance;
+	private static final ZickZack instance = new ZickZack();
 
 	/** The low speed for motor movement. */
 	private static final int LOW_SPEED = 100;
@@ -35,9 +35,6 @@ public class ZickZack implements IDriveStrategy {
 	 * @return the instance of ZigZag
 	 */
 	public static ZickZack getInstance() {
-		if (instance == null) {
-			instance = new ZickZack();
-		}
 		return instance;
 	}
 
@@ -57,7 +54,7 @@ public class ZickZack implements IDriveStrategy {
 	@Override
 	public void act(SensorService sensorService) {
 		int colorSensorValue = sensorService.colorSensor.getLightValue();
-		if (colorSensorValue < Robot.LIGHT_THRESHOLD) {
+		if (colorSensorValue < Robot.getLightThreshold()) {
 			Motor.A.setSpeed((int) (HIGH_SPEED * SPEED_MULTIPLIER));
 			Motor.B.setSpeed((int) (LOW_SPEED * SPEED_MULTIPLIER));
 		} else {

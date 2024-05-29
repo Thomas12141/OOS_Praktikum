@@ -8,7 +8,7 @@ import robot.Action;
  */
 public class BluetoothSensor implements Subscriber {
 	/** The only instance of BluetoothSensor. */
-	private static BluetoothSensor instance;
+	private static BluetoothSensor instance = new BluetoothSensor();
 	/** The current action updates by update(). */
 	private volatile int action;
 
@@ -24,9 +24,6 @@ public class BluetoothSensor implements Subscriber {
 	 * @return the only instance
 	 */
 	public static BluetoothSensor getInstance() {
-		if (instance == null) {
-			instance = new BluetoothSensor();
-		}
 		return instance;
 	}
 

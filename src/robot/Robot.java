@@ -19,11 +19,11 @@ public class Robot implements Subscriber {
 	private static int max = 0;
 	private static int min = 200;
 	
-	public static int LIGHT_THRESHOLD = (max+min)/2;
+	private static volatile int lightThreshold = (max+min)/2;
 	/**
 	 * The only instance of this class.
 	 */
-	private static Robot instance;
+	private static final Robot instance = new Robot();
 
 	/**
 	 * The sensor service.
@@ -62,12 +62,23 @@ public class Robot implements Subscriber {
 	 * @return the instance of robot
 	 */
 	public static Robot getInstance() {
-		if (instance == null) {
-			instance = new Robot();
-		}
 		return instance;
 	}
 
+	public static int getLightThreshold() {
+		return lightThreshold;
+	}
+	private static void updateThreshold(int threshold) {
+		lightThreshold = threshold;
+	}
+
+	private static void updateMin(int min) {
+		Robot.min = min;
+	}
+
+	private static void updateMax(int max) {
+		Robot.max = max;
+	}
 	/**
 	 * Updates the state with the light sensor to line lost or line found.
 	 */
@@ -77,15 +88,15 @@ public class Robot implements Subscriber {
 		if (stateMachine.getCurrentState() == USER_CTRL) return;
 		int lightV = sensorService.colorSensor.getLightValue();
 		if(lightV<min) {
-			min = lightV;
+			updateMin(lightV);
 			System.out.println("min: " + min);
 		}
 		if(lightV>max) {
-			max = lightV;
+			updateMax(lightV);
 			System.out.println("max: " + max);
 		}
-		LIGHT_THRESHOLD = (max+min)/2;
-		if (lightV < LIGHT_THRESHOLD) {
+		updateThreshold((max+min)/2);
+		if (lightV < lightThreshold) {
 			stateCounter++;
 			if (stateCounter == HOW_LONG_OUTSIDE_LINE) {
 				stateCounter = 0;

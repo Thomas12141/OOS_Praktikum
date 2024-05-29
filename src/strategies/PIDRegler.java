@@ -13,28 +13,10 @@ import robot.Robot;
 public class PIDRegler implements IDriveStrategy {
 	private static PIDController pid;
     /** The only instance of this singleton class. */
-    private static PIDRegler instance;
-
-    /** The proportional constant in the PID formula. */
-    private static int PROPORTION_CONSTANT = 700;
-
-    /** The integral constant in the PID formula. */
-    private static int INTEGRAL_CONSTANT = 0;
-
-    /** The derivative constant in the PID formula. */
-    private static int DERIVATIVE_CONSTANT = 0;
-
-    /** The factor by which the computed turn value is reduced. */
-    private static final int PROPORTION_REDUCER = 100;
+    private static final PIDRegler instance = new PIDRegler();
 
     /** The target power for the motors. */
-    private static int TARGET_POWER = 300;
-
-    /** Accumulated integral value used in the PID formula. */
-    private int integral = 0;
-
-    /** Previous error value used to compute the derivative term. */
-    private int lastError = 0;
+    private static final int TARGET_POWER = 300;
 
 
     /**
@@ -43,16 +25,13 @@ public class PIDRegler implements IDriveStrategy {
      * @return the instance of PIDRegler
      */
     public static PIDRegler getInstance() {
-        if (instance == null) {
-        	pid = new PIDController(Robot.LIGHT_THRESHOLD, 0);
-        	pid.setPIDParam(PIDController.PID_I_LIMITHIGH, 450);
-        	pid.setPIDParam(PIDController.PID_I_LIMITLOW, -450);
-        	
-        	pid.setPIDParam(PIDController.PID_KD, 0f);
-        	pid.setPIDParam(PIDController.PID_KI, 0f);
-        	pid.setPIDParam(PIDController.PID_KP, 10f);
-            instance = new PIDRegler();
-        }
+        pid = new PIDController(Robot.getLightThreshold(), 0);
+        pid.setPIDParam(PIDController.PID_I_LIMITHIGH, 450);
+        pid.setPIDParam(PIDController.PID_I_LIMITLOW, -450);
+
+        pid.setPIDParam(PIDController.PID_KD, 0f);
+        pid.setPIDParam(PIDController.PID_KI, 0f);
+        pid.setPIDParam(PIDController.PID_KP, 10f);
         return instance;
     }
 
@@ -67,8 +46,9 @@ public class PIDRegler implements IDriveStrategy {
      */
     @Override
     public void resetValues() {
-        //integral = 0;
-        //lastError = 0;
+        pid.setPIDParam(PIDController.PID_KD, 0f);
+        pid.setPIDParam(PIDController.PID_KI, 0f);
+        pid.setPIDParam(PIDController.PID_KP, 10f);
     }
 
     /**
@@ -83,17 +63,14 @@ public class PIDRegler implements IDriveStrategy {
     	if(value/10000>0) {
     		int option = value/10000;
     		if(option==4) {
-    			DERIVATIVE_CONSTANT = value%10000;
+                pid.setPIDParam(PIDController.PID_KD, value%10000);
     		}else if(option==3) {
-    			INTEGRAL_CONSTANT = value%10000;
+    			pid.setPIDParam(PIDController.PID_KI, value%10000);
     		}else if(option==2) {
-    			PROPORTION_CONSTANT = value%10000;
-    		}else if(option==1) {
-    			System.out.println("Set of TARGET_POWER to " + value%10000);
-    			TARGET_POWER = value%10000;
+                pid.setPIDParam(PIDController.PID_KP, value%10000);
     		}
     	}
-    	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.LIGHT_THRESHOLD);
+    	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.getLightThreshold());
         // Get the current light value from the sensor
         int colorSensorValue = sensorService.colorSensor.getLightValue();
 

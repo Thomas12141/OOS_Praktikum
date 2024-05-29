@@ -9,7 +9,7 @@ import lejos.nxt.UltrasonicSensor;
  */
 public class SensorService {
 	/** The only instance. */
-	private static SensorService instance;
+	private static final SensorService instance = new SensorService();
 	/** The ultrasonic sensor. */
 	public final UltrasonicSensor ultrasonicSensor;
 	/** The color sensor. */
@@ -23,9 +23,6 @@ public class SensorService {
 	 * @return the only instance
 	 */
 	public static SensorService getInstance() {
-		if (instance == null) {
-			instance = new SensorService();
-		}
 		return instance;
 	}
 

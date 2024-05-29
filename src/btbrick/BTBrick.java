@@ -19,7 +19,7 @@ public final class BTBrick implements Runnable {
     /** The data input stream from bluetooth */
     private DataInputStream inputStream;
     /** The BTBrick instance for singleton */
-    private static BTBrick instance;
+    private static final BTBrick instance = new BTBrick();
 
 
     /**
@@ -28,9 +28,6 @@ public final class BTBrick implements Runnable {
      * @return the BRBrick instance
      */
     public static BTBrick getInstance() {
-        if (instance == null) {
-            instance = new BTBrick();
-        }
         return instance;
     }
 

@@ -10,13 +10,11 @@ import robot.Action;
  */
 public class ManualDrive implements IDriveStrategy {
     /** The only instance. */
-    private static ManualDrive instance;
+    private static final ManualDrive instance = new ManualDrive();
     /** The low speed. */
     private static final int LOW_SPEED = 100;
     /** The high speed. */
     private static final int HIGH_SPEED = 300;
-    /** For checking if the NXT is driving. */
-    private static final int BORDER_BETWEEN_BACKWARD_AND_FORWARD = 0;
 
     /**
      * The constructor.
@@ -28,9 +26,6 @@ public class ManualDrive implements IDriveStrategy {
      * @return the only instance
      */
     public static ManualDrive getInstance() {
-        if (instance == null) {
-            instance = new ManualDrive();
-        }
         return instance;
     }
 
@@ -73,6 +68,7 @@ public class ManualDrive implements IDriveStrategy {
             case STOP: //stop
             	Motor.A.stop();
             	Motor.B.stop();
+                break;
             default:
             	break;
         }
