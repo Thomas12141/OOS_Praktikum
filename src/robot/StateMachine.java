@@ -6,7 +6,7 @@ package robot;
 public class StateMachine {
 
     /** The only instance */
-    private static StateMachine instance;
+    private static final StateMachine instance = new StateMachine();
     /** The current state */
 	private volatile State currentState;
 
@@ -23,9 +23,6 @@ public class StateMachine {
      * @return the instance
      */
     public static StateMachine getInstance() {
-        if (instance == null) {
-            instance = new StateMachine();
-        }
         return instance;
     }
 

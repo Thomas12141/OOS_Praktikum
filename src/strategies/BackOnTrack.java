@@ -3,6 +3,7 @@ package strategies;
 import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
+import robot.Robot;
 
 /**
  * This class brings the NXT back on the line in a circle shape,
@@ -52,7 +53,7 @@ public class BackOnTrack implements IDriveStrategy {
     @Override
     public void act(SensorService sensorService) {
     	int colorSensorValue = sensorService.colorSensor.getLightValue();
-        if (colorSensorValue > LIGHT_THRESHOLD) {
+        if (colorSensorValue > Robot.getLightThreshold()) {
             System.out.println("Linie gefunen!");
             return;
         }

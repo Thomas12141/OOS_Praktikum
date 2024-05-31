@@ -8,9 +8,9 @@ import robot.Action;
  */
 public class BluetoothSensor implements Subscriber {
 	/** The only instance of BluetoothSensor. */
-	private static BluetoothSensor instance;
+	private static BluetoothSensor instance = new BluetoothSensor();
 	/** The current action updates by update(). */
-	private volatile Action action;
+	private volatile int action;
 
 	/**
 	 * The constructor.
@@ -24,9 +24,6 @@ public class BluetoothSensor implements Subscriber {
 	 * @return the only instance
 	 */
 	public static BluetoothSensor getInstance() {
-		if (instance == null) {
-			instance = new BluetoothSensor();
-		}
 		return instance;
 	}
 
@@ -35,7 +32,7 @@ public class BluetoothSensor implements Subscriber {
 	 *
 	 * @return the current action
 	 */
-	public synchronized Action getAction() {
+	public synchronized int getAction() {
 		return action;
 	}
 
@@ -45,7 +42,7 @@ public class BluetoothSensor implements Subscriber {
 	 * @param action a read action of the bluetooth stream
 	 */
 	@Override
-	public synchronized void update(Action action) {
+	public synchronized void update(int action) {
 		this.action = action;
 	}
 }

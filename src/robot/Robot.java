@@ -14,10 +14,16 @@ import sensors.SensorService;
  * The class, which holds the sensor service, state machine and updates the state.
  */
 public class Robot implements Subscriber {
+	
+	
+	private static int max = 0;
+	private static int min = 200;
+	
+	private static volatile int lightThreshold = (max+min)/2;
 	/**
 	 * The only instance of this class.
 	 */
-	private static Robot instance;
+	private static final Robot instance = new Robot();
 
 	/**
 	 * The sensor service.
@@ -37,12 +43,9 @@ public class Robot implements Subscriber {
 	/**
 	 * This variable is set to control how long the NXT is outside the path.
 	 */
-	private static final int HOW_LONG_OUTSIDE_LINE = 50;
+	private static final int HOW_LONG_OUTSIDE_LINE = 100;
 
-	/**
-	 * Light threshold to calibrate the light sensor.
-	 */
-    private static final int LIGHT_THRESHOLD = 35;
+
 
 	/**
 	 * The constructor.
@@ -59,12 +62,23 @@ public class Robot implements Subscriber {
 	 * @return the instance of robot
 	 */
 	public static Robot getInstance() {
-		if (instance == null) {
-			instance = new Robot();
-		}
 		return instance;
 	}
 
+	public static int getLightThreshold() {
+		return lightThreshold;
+	}
+	private static void updateThreshold(int threshold) {
+		lightThreshold = threshold;
+	}
+
+	private static void updateMin(int min) {
+		Robot.min = min;
+	}
+
+	private static void updateMax(int max) {
+		Robot.max = max;
+	}
 	/**
 	 * Updates the state with the light sensor to line lost or line found.
 	 */
@@ -73,7 +87,16 @@ public class Robot implements Subscriber {
 		// Setzen der States
 		if (stateMachine.getCurrentState() == USER_CTRL) return;
 		int lightV = sensorService.colorSensor.getLightValue();
-		if (lightV < LIGHT_THRESHOLD) {
+		if(lightV<min) {
+			updateMin(lightV);
+			System.out.println("min: " + min);
+		}
+		if(lightV>max) {
+			updateMax(lightV);
+			System.out.println("max: " + max);
+		}
+		updateThreshold((max+min)/2);
+		if (lightV < lightThreshold) {
 			stateCounter++;
 			if (stateCounter == HOW_LONG_OUTSIDE_LINE) {
 				stateCounter = 0;
@@ -130,13 +153,12 @@ public class Robot implements Subscriber {
 	 * @param action a read action of the bluetooth stream
 	 */
 	@Override
-	public void update(Action action) {
+	public void update(int action) {
 
-        System.out.print("Robot updated: " + action + "\n");
 		State state = stateMachine.getCurrentState();
-		if ( action == MANUAL && state != USER_CTRL) {
+		if ( action == MANUAL.ordinal() && state != USER_CTRL) {
 			stateMachine.setState(USER_CTRL);
-		} else if ( action == MANUAL ) {
+		} else if ( action == MANUAL.ordinal() ) {
 			stateMachine.setState(LINE_FOUND);
 		}
 

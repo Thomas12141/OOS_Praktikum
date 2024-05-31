@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import interfaces.Subscriber;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
-import robot.Action;
 
 /**
  * The class, which runs the bluetooth connection to the controller and reads the input stream.
@@ -20,7 +19,7 @@ public final class BTBrick implements Runnable {
     /** The data input stream from bluetooth */
     private DataInputStream inputStream;
     /** The BTBrick instance for singleton */
-    private static BTBrick instance;
+    private static final BTBrick instance = new BTBrick();
 
 
     /**
@@ -29,9 +28,6 @@ public final class BTBrick implements Runnable {
      * @return the BRBrick instance
      */
     public static BTBrick getInstance() {
-        if (instance == null) {
-            instance = new BTBrick();
-        }
         return instance;
     }
 
@@ -72,10 +68,7 @@ public final class BTBrick implements Runnable {
             if (length > 0) {
                 try {
                 	int index = inputStream.readInt();
-                	System.out.print("Index: " + index + "\n");
-                    Action commandBT = Action.values()[index];
-                    System.out.print("Command recieved: " + commandBT + "\n");
-                    notifySubscribers(commandBT);
+                    notifySubscribers(index);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -105,7 +98,7 @@ public final class BTBrick implements Runnable {
      *
      * @param action the read action from input stream
      */
-    public void notifySubscribers(Action action) {
+    public void notifySubscribers(int action) {
         for (Subscriber subscriber: subscribers) {
             subscriber.update(action);
         }

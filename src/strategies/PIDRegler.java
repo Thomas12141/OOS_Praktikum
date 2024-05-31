@@ -3,38 +3,21 @@ package strategies;
 import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
+import lejos.util.PIDController;
+import robot.Robot;
 
 /**
  * This class implements the proportional–integral–derivative (PID) controller
  * to adjust motor speeds and keep the robot on track based on sensor input.
  */
 public class PIDRegler implements IDriveStrategy {
+	private static PIDController pid;
     /** The only instance of this singleton class. */
-    private static PIDRegler instance;
-
-    /** The proportional constant in the PID formula. */
-    private static final int PROPORTION_CONSTANT = 1000;
-
-    /** The integral constant in the PID formula. */
-    private static final int INTEGRAL_CONSTANT = 0;
-
-    /** The derivative constant in the PID formula. */
-    private static final int DERIVATIVE_CONSTANT = 0;
-
-    /** The factor by which the computed turn value is reduced. */
-    private static final int PROPORTION_REDUCER = 100;
+    private static final PIDRegler instance = new PIDRegler();
 
     /** The target power for the motors. */
-    private static final int TARGET_POWER = 25;
+    private static final int TARGET_POWER = 300;
 
-    /** Accumulated integral value used in the PID formula. */
-    private int integral = 0;
-
-    /** Previous error value used to compute the derivative term. */
-    private int lastError = 0;
-
-    /** Light threshold for the sensor reading. */
-    private static final int LIGHT_THRESHOLD = 50; // Example value, should be set according to the actual light sensor setup
 
     /**
      * Returns the single instance of the PIDRegler class.
@@ -42,9 +25,13 @@ public class PIDRegler implements IDriveStrategy {
      * @return the instance of PIDRegler
      */
     public static PIDRegler getInstance() {
-        if (instance == null) {
-            instance = new PIDRegler();
-        }
+        pid = new PIDController(Robot.getLightThreshold(), 0);
+        pid.setPIDParam(PIDController.PID_I_LIMITHIGH, 450);
+        pid.setPIDParam(PIDController.PID_I_LIMITLOW, -450);
+
+        pid.setPIDParam(PIDController.PID_KD, 0f);
+        pid.setPIDParam(PIDController.PID_KI, 0f);
+        pid.setPIDParam(PIDController.PID_KP, 10f);
         return instance;
     }
 
@@ -59,8 +46,9 @@ public class PIDRegler implements IDriveStrategy {
      */
     @Override
     public void resetValues() {
-        integral = 0;
-        lastError = 0;
+        pid.setPIDParam(PIDController.PID_KD, 0f);
+        pid.setPIDParam(PIDController.PID_KI, 0f);
+        pid.setPIDParam(PIDController.PID_KP, 10f);
     }
 
     /**
@@ -71,24 +59,25 @@ public class PIDRegler implements IDriveStrategy {
      */
     @Override
     public void act(SensorService sensorService) {
+    	int value = sensorService.bluetoothSensor.getAction();
+    	if(value/10000>0) {
+    		int option = value/10000;
+    		if(option==4) {
+                pid.setPIDParam(PIDController.PID_KD, value%10000);
+    		}else if(option==3) {
+    			pid.setPIDParam(PIDController.PID_KI, value%10000);
+    		}else if(option==2) {
+                pid.setPIDParam(PIDController.PID_KP, value%10000);
+    		}
+    	}
+    	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.getLightThreshold());
         // Get the current light value from the sensor
         int colorSensorValue = sensorService.colorSensor.getLightValue();
 
-        // Calculate the error value (deviation from the desired light threshold)
-        int error = colorSensorValue - LIGHT_THRESHOLD;
 
-        // Update the integral term
-        integral += error;
-
-        // Calculate the derivative term
-        int derivative = error - lastError;
-
-        // Compute the turn value using the PID formula
-        int turn = PROPORTION_CONSTANT * error + INTEGRAL_CONSTANT * integral + DERIVATIVE_CONSTANT * derivative;
-
-        // Reduce the turn value to a manageable range
-        turn /= PROPORTION_REDUCER;
-
+    	int turn = pid.doPID(colorSensorValue);
+    	
+    	System.out.println("pid turn" + turn);
         // Calculate the power for each motor
         int powerA = TARGET_POWER + turn;
         int powerB = TARGET_POWER - turn;
@@ -99,7 +88,5 @@ public class PIDRegler implements IDriveStrategy {
         Motor.B.forward();
         Motor.B.setSpeed(powerB);
 
-        // Update the last error for the next iteration
-        lastError = error;
     }
 }

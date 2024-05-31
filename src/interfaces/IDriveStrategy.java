@@ -19,9 +19,4 @@ public interface IDriveStrategy {
 	 * Reset all values.
 	 */
 	void resetValues();
-
-	/**
-	 * The light threshold for light sensor calibration.
-	 */
-	int LIGHT_THRESHOLD = 35;
 }

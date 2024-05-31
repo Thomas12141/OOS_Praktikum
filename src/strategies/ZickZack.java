@@ -3,6 +3,7 @@ package strategies;
 import sensors.SensorService;
 import interfaces.IDriveStrategy;
 import lejos.nxt.Motor;
+import robot.Robot;
 
 /**
  * This class implements a zigzag driving strategy where the robot adjusts its motor speeds based on sensor input.
@@ -10,7 +11,7 @@ import lejos.nxt.Motor;
 public class ZickZack implements IDriveStrategy {
 
 	/** The only instance of this singleton class. */
-	private static ZickZack instance;
+	private static final ZickZack instance = new ZickZack();
 
 	/** The low speed for motor movement. */
 	private static final int LOW_SPEED = 100;
@@ -21,8 +22,6 @@ public class ZickZack implements IDriveStrategy {
 	/** The multiplier to adjust speed for zigzag movement. */
 	private static final double SPEED_MULTIPLIER = 1.5;
 
-	/** Light threshold for the sensor reading. */
-	private static final int LIGHT_THRESHOLD = 50; // Example value, should be set according to the actual light sensor setup
 
 	/**
 	 * Private constructor to enforce the singleton pattern.
@@ -36,9 +35,6 @@ public class ZickZack implements IDriveStrategy {
 	 * @return the instance of ZigZag
 	 */
 	public static ZickZack getInstance() {
-		if (instance == null) {
-			instance = new ZickZack();
-		}
 		return instance;
 	}
 
@@ -58,7 +54,7 @@ public class ZickZack implements IDriveStrategy {
 	@Override
 	public void act(SensorService sensorService) {
 		int colorSensorValue = sensorService.colorSensor.getLightValue();
-		if (colorSensorValue < LIGHT_THRESHOLD) {
+		if (colorSensorValue < Robot.getLightThreshold()) {
 			Motor.A.setSpeed((int) (HIGH_SPEED * SPEED_MULTIPLIER));
 			Motor.B.setSpeed((int) (LOW_SPEED * SPEED_MULTIPLIER));
 		} else {
