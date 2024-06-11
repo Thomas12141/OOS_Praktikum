@@ -63,11 +63,11 @@ public class PIDRegler implements IDriveStrategy {
     	if(value/10000>0) {
     		int option = value/10000;
     		if(option==4) {
-                pid.setPIDParam(PIDController.PID_KD, value%10000);
+                pid.setPIDParam(PIDController.PID_KD, (float) (value % 10000) /10);
     		}else if(option==3) {
-    			pid.setPIDParam(PIDController.PID_KI, value%10000);
+    			pid.setPIDParam(PIDController.PID_KI, (float) (value % 10000) /10);
     		}else if(option==2) {
-                pid.setPIDParam(PIDController.PID_KP, value%10000);
+                pid.setPIDParam(PIDController.PID_KP, (float) (value % 10000) /10);
     		}
     	}
     	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.getLightThreshold());
