@@ -16,25 +16,30 @@ public class PIDRegler implements IDriveStrategy {
     private static final PIDRegler instance = new PIDRegler();
 
     /** The target power for the motors. */
-    private static final int TARGET_POWER = 300;
+    private static int TARGET_POWER = 300;
+    
+    private static int lastLightValue;
 
-
+    
     /**
      * Returns the single instance of the PIDRegler class.
      *
      * @return the instance of PIDRegler
      */
     public static PIDRegler getInstance() {
+    	if (pid == null) {
+    		startPid();
+    	}
+        return instance;
+    }
+    
+    private static void startPid() {
         pid = new PIDController(Robot.getLightThreshold(), 0);
-        pid.setPIDParam(PIDController.PID_I_LIMITHIGH, 450);
-        pid.setPIDParam(PIDController.PID_I_LIMITLOW, -450);
 
         pid.setPIDParam(PIDController.PID_KD, 0f);
         pid.setPIDParam(PIDController.PID_KI, 0f);
         pid.setPIDParam(PIDController.PID_KP, 10f);
-        return instance;
     }
-
     /**
      * Private constructor to enforce the singleton pattern.
      */
@@ -68,16 +73,17 @@ public class PIDRegler implements IDriveStrategy {
     			pid.setPIDParam(PIDController.PID_KI, (float) (value % 10000) /10);
     		}else if(option==2) {
                 pid.setPIDParam(PIDController.PID_KP, (float) (value % 10000) /10);
+    		}else if(option==5) {
+    			TARGET_POWER = value % 10000;
     		}
     	}
-    	pid.setPIDParam(PIDController.PID_SETPOINT, Robot.getLightThreshold());
         // Get the current light value from the sensor
         int colorSensorValue = sensorService.colorSensor.getLightValue();
-
+        
 
     	int turn = pid.doPID(colorSensorValue);
+
     	
-    	System.out.println("pid turn" + turn);
         // Calculate the power for each motor
         int powerA = TARGET_POWER + turn;
         int powerB = TARGET_POWER - turn;
@@ -88,5 +94,10 @@ public class PIDRegler implements IDriveStrategy {
         Motor.B.forward();
         Motor.B.setSpeed(powerB);
 
+    	
+        if(lastLightValue!= Robot.getLightThreshold()) {
+        	lastLightValue = Robot.getLightThreshold();
+        	startPid();
+        }
     }
 }

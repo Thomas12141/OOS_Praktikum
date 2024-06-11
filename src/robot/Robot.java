@@ -89,11 +89,9 @@ public class Robot implements Subscriber {
 		int lightV = sensorService.colorSensor.getLightValue();
 		if(lightV<min) {
 			updateMin(lightV);
-			System.out.println("min: " + min);
 		}
 		if(lightV>max) {
 			updateMax(lightV);
-			System.out.println("max: " + max);
 		}
 		updateThreshold((max+min)/2);
 		if (lightV < lightThreshold) {
